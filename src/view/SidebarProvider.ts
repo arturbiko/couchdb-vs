@@ -39,6 +39,7 @@ export default class SidebarProvider implements vscode.WebviewViewProvider {
 		const bundleScriptPath = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'dist', 'app', 'extension.js'));
 		const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
 		const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
+		const styleView = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'assets', 'SidebarProvider.css'));
 
 		const nonce = getNonce();
 
@@ -52,17 +53,18 @@ export default class SidebarProvider implements vscode.WebviewViewProvider {
 					and only allow scripts that have a specific nonce.
 					(See the 'webview-sample' extension sample for img-src content security policy examples)
 				-->
-				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}';">
 
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 				<link href="${styleResetUri}" rel="stylesheet">
 				<link href="${styleVSCodeUri}" rel="stylesheet">
+				<link href="${styleView}" rel="stylesheet">
 
 				<title>Cat Colors</title>
 			</head>
 			<body>
-				<div id="root"></div>
+				<div id="root" data-id="${SidebarProvider.viewType}"></div>
 				<script src="${bundleScriptPath}" nonce="${nonce}"></script>
 			</body>
 			</html>`;

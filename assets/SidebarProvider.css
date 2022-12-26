@@ -1,0 +1,18 @@
+input {
+    margin: 0 0 8px 0;
+}
+
+p {
+    margin: 8px 0 8px 0;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: row;
+    margin: 0 0 8px 0;
+}
+
+.MuiSvgIcon-root {
+    margin: 0 0 0 8px;
+    align-self: center;
+}
