@@ -1,11 +1,11 @@
-import React, { ReactNode } from 'react';
+import React, { PropsWithoutRef, ReactNode } from 'react';
  
 
-const Button: React.FC<{ children: ReactNode }> = ({ children }) => {
+const Button: React.FC<{ children: ReactNode, onClick: Function, disabled: boolean }> = ({ children, onClick, disabled}) => {
 
 
     return (
-        <button>
+        <button onClick={() => onClick()} disabled={disabled}>
             {children}
         </button>
     )

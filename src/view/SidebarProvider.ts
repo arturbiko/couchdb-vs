@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { Database } from '../services/Database';
 
 export default class SidebarProvider implements vscode.WebviewViewProvider {
 
@@ -6,9 +7,14 @@ export default class SidebarProvider implements vscode.WebviewViewProvider {
 
 	private _view?: vscode.WebviewView;
 
+	private database: Database;
+
 	constructor(
 		private readonly _extensionUri: vscode.Uri,
-	) { }
+	) {
+
+		this.database = new Database();
+	}
 
 	public resolveWebviewView(
 		webviewView: vscode.WebviewView,
@@ -27,8 +33,20 @@ export default class SidebarProvider implements vscode.WebviewViewProvider {
 
 		webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-		webviewView.webview.onDidReceiveMessage(data => {
+		webviewView.webview.onDidReceiveMessage(async (data) => {
 			switch (data.type) {
+				case 'CONNECT':
+					try {
+						const info = await this.database.up(data);
+
+						await this.database.auth(data);
+
+						vscode.window.showInformationMessage("Successfully connected to CouchDB!");	
+					} catch (error: any) {
+						vscode.window.showErrorMessage(error.message);	
+					}
+
+					break;
 				default:
 					break;
 			}
@@ -60,8 +78,6 @@ export default class SidebarProvider implements vscode.WebviewViewProvider {
 				<link href="${styleResetUri}" rel="stylesheet">
 				<link href="${styleVSCodeUri}" rel="stylesheet">
 				<link href="${styleView}" rel="stylesheet">
-
-				<title>Cat Colors</title>
 			</head>
 			<body>
 				<div id="root" data-id="${SidebarProvider.viewType}"></div>

@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
-import Button from '../components/Button';
+import { ConnectionConfiguration } from '../api/connection.model';
+import { VSCode } from '../api/vscode.model';
 import CreateConnection from '../screen/CreateConnection';
 
-export const SidebarView: React.FC = () => {
+export const SidebarView: React.FC<{ vscode: VSCode }> = ({ vscode }) => {
 
     const [connected, setConnected] = useState(false);
 
-    const openConnection = () => {
-        setConnected(true);
+    const openConnection = (config: ConnectionConfiguration) => {
+        vscode.postMessage<{type: 'CONNECT', payload: ConnectionConfiguration}>({
+            type: 'CONNECT',
+            payload: config,
+        });
     }
 
     if (!connected) {
-        return <CreateConnection />;
+        return <CreateConnection 
+                    loading={false}
+                    onConnect={(config: ConnectionConfiguration) => openConnection(config)} 
+                />;
     }
 
     return (

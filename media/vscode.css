@@ -73,6 +73,10 @@ button.secondary:hover {
 	background: var(--vscode-button-secondaryHoverBackground);
 }
 
+button:disabled {
+	background: var(--vscode-debugIcon-breakpointDisabledForeground);
+}
+
 input:not([type='checkbox']),
 textarea {
 	display: block;
