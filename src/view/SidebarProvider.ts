@@ -1,3 +1,4 @@
+import nano = require('nano');
 import * as vscode from 'vscode';
 import { Database } from '../services/Database';
 
@@ -19,7 +20,7 @@ export default class SidebarProvider implements vscode.WebviewViewProvider {
 		this.database = new Database();
 	}
 
-	public resolveWebviewView(
+	public async resolveWebviewView(
 		webviewView: vscode.WebviewView,
 		context: vscode.WebviewViewResolveContext,
 		_token: vscode.CancellationToken,
@@ -36,6 +37,33 @@ export default class SidebarProvider implements vscode.WebviewViewProvider {
 
 		webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
+		// Check if there is persisted data and rebuild old state
+		let info: nano.InfoResponse | null = null;
+		let connected = false;
+
+		const savedUrl: string | undefined = this._context.workspaceState.get('couchdb-vs-nano-host');
+		let cookie: string | undefined = this._context.workspaceState.get('couchdb-vs-nano-cookie');
+
+		if (savedUrl) {
+			info = await this.database.up({payload: { username: '', password: '', url: savedUrl}}, cookie);
+		}
+
+		if (savedUrl && cookie && info) {
+			connected = true;
+
+			await this.database.session(savedUrl, cookie, async () => {
+				await webviewView.webview.postMessage({
+					type: 'CONNECT',
+					payload: {
+						connected: true,
+						info: info
+					}
+				});
+			}, (error: string) => {
+				vscode.window.showErrorMessage(error);	
+			});
+		}
+
 		webviewView.webview.onDidReceiveMessage(async (data) => {
 			switch (data.type) {
 				case 'CONNECT':
@@ -51,6 +79,7 @@ export default class SidebarProvider implements vscode.WebviewViewProvider {
 
 						this.database.auth(data, 
 							async (cookie: string) => {
+								this._context.workspaceState.update('couchdb-vs-nano-host', data.payload.url);
 								this._context.workspaceState.update('couchdb-vs-nano-cookie', cookie);
 								this._context.workspaceState.update('couchdb-vs-nano-meta', info);
 
@@ -93,7 +122,7 @@ export default class SidebarProvider implements vscode.WebviewViewProvider {
 		});
 	}
 
-	private _getHtmlForWebview(webview: vscode.Webview) {
+	private _getHtmlForWebview(webview: vscode.Webview): string {
 		const bundleScriptPath = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'dist', 'app', 'extension.js'));
 		const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
 		const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
