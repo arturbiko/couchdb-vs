@@ -7,12 +7,15 @@ export default class SidebarProvider implements vscode.WebviewViewProvider {
 
 	private _view?: vscode.WebviewView;
 
+	private _context: vscode.ExtensionContext;
+
 	private database: Database;
 
 	constructor(
+		private readonly context: vscode.ExtensionContext,
 		private readonly _extensionUri: vscode.Uri,
 	) {
-
+		this._context = context;
 		this.database = new Database();
 	}
 
@@ -37,13 +40,50 @@ export default class SidebarProvider implements vscode.WebviewViewProvider {
 			switch (data.type) {
 				case 'CONNECT':
 					try {
+						await webviewView.webview.postMessage({
+							type: 'LOADING',
+							payload: {
+								started: true
+							}
+						});
+
 						const info = await this.database.up(data);
 
-						await this.database.auth(data);
+						this.database.auth(data, 
+							async (cookie: string) => {
+								this._context.workspaceState.update('couchdb-vs-nano-cookie', cookie);
+								this._context.workspaceState.update('couchdb-vs-nano-meta', info);
 
-						vscode.window.showInformationMessage("Successfully connected to CouchDB!");	
+								await webviewView.webview.postMessage({
+									type: 'CONNECT',
+									payload: {
+										connected: true,
+										info: info
+									}
+								});
+		
+								await webviewView.webview.postMessage({
+									type: 'LOADING',
+									payload: {
+										started: false
+									}
+								});
+		
+								vscode.window.showInformationMessage("Successfully connected to CouchDB!");	
+							}, 
+							async (error: string) => {
+								await webviewView.webview.postMessage({
+									type: 'LOADING',
+									payload: {
+										started: false
+									}
+								});
+
+								vscode.window.showErrorMessage(error);	
+							}
+						);
 					} catch (error: any) {
-						vscode.window.showErrorMessage(error.message);	
+						vscode.window.showErrorMessage(error);	
 					}
 
 					break;

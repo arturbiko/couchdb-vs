@@ -1,11 +1,24 @@
 import React, { PropsWithoutRef, ReactNode } from 'react';
  
 
-const Button: React.FC<{ children: ReactNode, onClick: Function, disabled: boolean }> = ({ children, onClick, disabled}) => {
+interface IProps {
+    children: ReactNode; 
+    onClick?: Function; 
+    disabled?: boolean;
+}
 
-
+const Button: React.FC<IProps> = ({ children, onClick, disabled}) => {
     return (
-        <button onClick={() => onClick()} disabled={disabled}>
+        <button 
+            onClick={() => {
+                if (!onClick) {
+                    return;
+                }
+
+                onClick();
+                }} 
+            disabled={disabled}
+        >
             {children}
         </button>
     )

@@ -1,11 +1,17 @@
+import nano from 'nano';
 import React, { useState } from 'react';
+import { vscode } from '..';
 import { ConnectionConfiguration } from '../api/connection.model';
-import { VSCode } from '../api/vscode.model';
+import MetaInfo from '../elements/MetaInfo';
 import CreateConnection from '../screen/CreateConnection';
 
-export const SidebarView: React.FC<{ vscode: VSCode }> = ({ vscode }) => {
+interface IProps {
+    loading: boolean; 
+    connected: boolean;
+    meta: nano.InfoResponse | null
+}
 
-    const [connected, setConnected] = useState(false);
+export const SidebarView: React.FC<IProps> = ({ loading, connected, meta }) => {
 
     const openConnection = (config: ConnectionConfiguration) => {
         vscode.postMessage<{type: 'CONNECT', payload: ConnectionConfiguration}>({
@@ -14,16 +20,14 @@ export const SidebarView: React.FC<{ vscode: VSCode }> = ({ vscode }) => {
         });
     }
 
-    if (!connected) {
-        return <CreateConnection 
-                    loading={false}
-                    onConnect={(config: ConnectionConfiguration) => openConnection(config)} 
-                />;
-    }
-
     return (
         <>
-            Undefined State
+            <CreateConnection 
+                loading={loading}
+                connected={connected}
+                onConnect={(config: ConnectionConfiguration) => openConnection(config)} 
+            />
+            { meta && <MetaInfo meta={meta} /> }
         </>
     )
 }

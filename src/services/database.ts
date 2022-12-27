@@ -26,19 +26,19 @@ export class Database {
         }
     }
 
-    public async auth(config: ConnectionConfiguration): Promise<void> {
+    public async auth(config: ConnectionConfiguration, onSuccess: Function, onFailure: Function): Promise<void> {
         if (!this._connection) {
             return Promise.reject({ message: 'Connection not yet established.' });
         }
 
-        try {
-            const response = await this._connection.auth(config.payload.username, config.payload.password);
-
-            if (!response.ok) {
-                throw new Error('Username or password are invalid');
+        this._connection.auth(config.payload.username, config.payload.password, (error, body, headers) => {
+            if (error) {
+                onFailure(error.message);
             }
-        } catch (error) {
-            return Promise.reject(error);
-        }
+
+            if (headers && headers['set-cookie'][0]) {
+                onSuccess(headers['set-cookie'][0]);
+            }
+        });
     }
 }

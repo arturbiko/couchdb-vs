@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { VSCode } from './api/vscode.model';
 
 import App from './App';
+
+export const vscode: VSCode = window.acquireVsCodeApi();
 
 const element = document.getElementById("root");
 
