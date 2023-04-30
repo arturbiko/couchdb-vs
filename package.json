@@ -1,34 +1,74 @@
 {
-    "name": "couchdb-vs",
-    "displayName": "CouchDB VS",
-    "version": "0.0.1",
-    "description": "Datamanagement for CouchDB.",
-    "author": {
-        "name": "Artur Biko",
-        "email": "your.email@example.com"
-    },
-    "engines": {
-        "vscode": "^1.22.0"
-    },
-    "categories": [
-        "Other"
-    ],
-    "main": "./out/extension.js",
-    "contributes": {
-    },
-    "dependencies": {
-        "vscode": "^1.1.37"
-    },
-    "devDependencies": {
-        "ts-loader": "^9.4.2",
-        "webpack": "^5.81.0",
-        "webpack-cli": "^5.0.2"
-    },
-    "scripts": {
-        "build": "webpack --config webpack.config.js",
-        "watch": "webpack --watch",
-        "prepublishOnly": "npm run compile",
-        "test": "echo \"No tests yet...\" && exit 0"
-    },
-    "license": "MIT"
+	"name": "couchdb-vs",
+	"displayName": "CouchDB VS",
+	"version": "0.0.1",
+	"description": "Datamanagement for CouchDB.",
+	"author": {
+		"name": "Artur Biko",
+		"email": "your.email@example.com"
+	},
+	"engines": {
+		"vscode": "^1.22.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"configuration": {
+			"title": "CouchDB VS",
+			"properties": {
+				"couchDBVS.host": {
+					"type": "string",
+					"description": "The URL of the host",
+					"default": "",
+					"scope": "workspace"
+				},
+				"couchDBVS.username": {
+					"type": "string",
+					"description": "The username to use",
+					"default": "",
+					"scope": "workspace"
+				},
+				"couchDBVS.password": {
+					"type": "string",
+					"description": "The password to use",
+					"default": "",
+					"scope": "workspace"
+				}
+			}
+		},
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"icon": "./assets/icon.svg",
+					"id": "couchDataView",
+					"title": "CouchDB"
+				}
+			]
+		},
+		"views": {
+			"couchDataView": [
+				{
+					"id": "couchDBVS.couchDataView",
+					"name": "Data"
+				}
+			]
+		}
+	},
+	"dependencies": {
+		"vscode": "^1.1.37"
+	},
+	"devDependencies": {
+		"ts-loader": "^9.4.2",
+		"webpack": "^5.81.0",
+		"webpack-cli": "^5.0.2"
+	},
+	"scripts": {
+		"build": "webpack --config webpack.config.js",
+		"watch": "webpack --watch",
+		"prepublishOnly": "npm run compile",
+		"test": "echo \"No tests yet...\" && exit 0"
+	},
+	"license": "MIT"
 }

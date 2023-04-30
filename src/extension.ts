@@ -1,16 +1,13 @@
 import * as vscode from 'vscode';
+import CouchExtension from './couch.extension';
+
+export function extensionId(sub: string): string {
+	return `couchDBVS.${sub}`;
+}
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log('Congratulations, your extension is now active!');
-
-	const disposable = vscode.commands.registerCommand(
-		'myExtension.sayHello',
-		() => {
-			vscode.window.showInformationMessage('Hello World!');
-		}
-	);
-
-	context.subscriptions.push(disposable);
+	const myExtension = new CouchExtension();
+	myExtension.activate(context);
 }
 
 export function deactivate() {
