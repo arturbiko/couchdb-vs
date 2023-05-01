@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import CouchRow from './couch.item';
+import nano = require('nano');
+import { extensionId } from '../extension';
 
 export class CouchDataProvider implements vscode.TreeDataProvider<CouchRow> {
 	private _onDidChangeTreeData: vscode.EventEmitter<CouchRow | undefined> =
@@ -12,12 +14,32 @@ export class CouchDataProvider implements vscode.TreeDataProvider<CouchRow> {
 		return element;
 	}
 
-	getChildren(element?: CouchRow): Thenable<CouchRow[]> {
-		// Implement logic for returning child elements here
-		return Promise.resolve([]);
+	async getChildren(element?: CouchRow): Promise<CouchRow[]> {
+		const config = vscode.workspace.getConfiguration(extensionId());
+		const host = config.get<string>('host');
+		const username = config.get<string>('username');
+		const password = config.get<string>('password');
+
+		const dbUrl = `http://${username}:${password}@${host}`;
+
+		try {
+			const couch = nano(dbUrl);
+			const dbList = await couch.db.list();
+
+			const items = dbList.map((name) => {
+				return new CouchRow(name, vscode.TreeItemCollapsibleState.Collapsed);
+			});
+
+			return items;
+		} catch (error: any) {
+			vscode.window.showErrorMessage(
+				`Error connecting to CouchDB: ${error.message}`
+			);
+			return [];
+		}
 	}
 
 	refresh(): void {
-		this._onDidChangeTreeData.fire();
+		// this._onDidChangeTreeData.fire();
 	}
 }
