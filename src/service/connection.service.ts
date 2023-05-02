@@ -7,15 +7,15 @@ export default class ConnectionService {
 
 	public constructor() {}
 
-	public instance(): nano.ServerScope {
+	public async instance(): Promise<nano.ServerScope> {
 		if (!this.connection) {
-			this.connection = this.connect();
+			this.connection = await this.connect();
 		}
 
 		return this.connection;
 	}
 
-	private connect(): nano.ServerScope {
+	private async connect(): Promise<nano.ServerScope> {
 		const config = vscode.workspace.getConfiguration(extensionId());
 		const host = config.get<string>('host');
 		const username = config.get<string>('username');
@@ -26,6 +26,17 @@ export default class ConnectionService {
 		}
 
 		const dbUrl = `http://${username}:${password}@${host}`;
-		return nano(dbUrl);
+
+		const connection = nano(dbUrl);
+
+		try {
+			await connection.info();
+		} catch (error) {
+			throw new Error(
+				'Trouble accessing CouchDB. Check your connections settings and try connecting again.'
+			);
+		}
+
+		return connection;
 	}
 }

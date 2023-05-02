@@ -95,7 +95,7 @@ export default class CouchModel {
 	public async fetchDocuments(database: string, offset?: number): Promise<void> {
 		this.activeDatabase = database;
 
-		const couch = this.connection.instance();
+		const couch = await this.connection.instance();
 
 		const response: DocumentsResponseData = await couch.request({
 			db: database,
@@ -121,7 +121,7 @@ export default class CouchModel {
 	}
 
 	private async fetchDatabases(): Promise<void> {
-		const couch = this.connection.instance();
+		const couch = await this.connection.instance();
 
 		const items = (await couch.db.list()).map((name) => {
 			return new Database(name, vscode.TreeItemCollapsibleState.None);

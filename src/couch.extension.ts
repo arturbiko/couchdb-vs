@@ -52,5 +52,12 @@ export default class CouchExtension {
 				couchDocumentProvider.refresh();
 			}
 		);
+
+		vscode.commands.registerCommand(extensionId('openSettings'), () => {
+			vscode.commands.executeCommand(
+				'workbench.action.openSettings',
+				extensionId()
+			);
+		});
 	}
 }

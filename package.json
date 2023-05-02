@@ -17,21 +17,21 @@
 	"activationEvents": [],
 	"contributes": {
 		"configuration": {
-			"title": "CouchDB VS",
+			"title": "CouchDB Connection",
 			"properties": {
-				"couchDBVS.host": {
+				"couchdb-vs.host": {
 					"type": "string",
 					"description": "The URL of the host",
 					"default": "",
 					"scope": "workspace"
 				},
-				"couchDBVS.username": {
+				"couchdb-vs.username": {
 					"type": "string",
 					"description": "The username to use",
 					"default": "",
 					"scope": "workspace"
 				},
-				"couchDBVS.password": {
+				"couchdb-vs.password": {
 					"type": "string",
 					"description": "The password to use",
 					"default": "",
@@ -51,11 +51,11 @@
 		"views": {
 			"couchDataView": [
 				{
-					"id": "couchDBVS.couchDataView",
+					"id": "couchdb-vs.couchDataView",
 					"name": "Databases"
 				},
 				{
-					"id": "couchDBVS.couchDocumentList",
+					"id": "couchdb-vs.couchDocumentList",
 					"name": "Documents"
 				}
 			]
@@ -63,8 +63,8 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "couchDBVS.refreshDatabases",
-					"when": "view == couchDBVS.couchDataView",
+					"command": "couchdb-vs.refreshDatabases",
+					"when": "view == couchdb-vs.couchDataView",
 					"group": "navigation"
 				}
 			]
@@ -75,7 +75,7 @@
 				"title": "Hello World"
 			},
 			{
-				"command": "couchDBVS.refreshDatabases",
+				"command": "couchdb-vs.refreshDatabases",
 				"title": "Refresh",
 				"icon": {
 					"light": "assets/light/refresh.svg",
@@ -83,8 +83,22 @@
 				}
 			},
 			{
-				"command": "couchDBVS.selectDatabase",
-				"title": "select"
+				"command": "couchdb-vs.selectDatabase",
+				"title": "Select"
+			},
+			{
+				"command": "couchdb-vs.openSettings",
+				"title": "Settings"
+			}
+		],
+		"viewsWelcome": [
+			{
+				"view": "couchdb-vs.couchDataView",
+				"contents": "Please configure the connection settings and try to refresh the data. \n[Settings](command:couchdb-vs.openSettings)"
+			},
+			{
+				"view": "couchdb-vs.couchDocumentList",
+				"contents": "No databases selected to display any documents. Well played."
 			}
 		]
 	},
