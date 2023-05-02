@@ -1,13 +1,17 @@
 import * as vscode from 'vscode';
-import CouchRow from './provider/couch.item';
+import CouchItem from './provider/couch.item';
 import { CouchDataProvider } from './provider/couch.provider';
 import { extensionId } from './extension';
+import CouchModel from './provider/couch.model';
 
 export default class CouchExtension {
-	private treeView?: vscode.TreeView<CouchRow>;
+	private treeView?: vscode.TreeView<CouchItem>;
 
 	activate(context: vscode.ExtensionContext) {
-		const myTreeProvider = new CouchDataProvider();
+		const couchData = new CouchModel();
+		couchData.fetchAll();
+
+		const myTreeProvider = new CouchDataProvider(couchData);
 		this.treeView = vscode.window.createTreeView(extensionId('couchDataView'), {
 			treeDataProvider: myTreeProvider,
 		});
