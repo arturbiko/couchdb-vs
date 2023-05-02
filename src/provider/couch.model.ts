@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import ConnectionService from '../service/connection.service';
-import { Page, Row } from './couch.collection';
+import { Row } from './couch.collection';
 import CouchItem from './couch.item';
 
 export const PAGE_SIZE = 10;
@@ -35,7 +35,7 @@ export default class CouchModel {
 	}
 
 	public listDatabases(): CouchItem[] {
-		return this.paginate(this.databases);
+		return this.databases.items;
 	}
 
 	private async fetchDatabases(): Promise<void> {
@@ -49,41 +49,5 @@ export default class CouchModel {
 			items: items,
 			pages: items.length === 0 ? 1 : Math.max(items.length / PAGE_SIZE),
 		};
-	}
-
-	private paginate(data: PaginatedData): CouchItem[] {
-		// bail early if little element size
-		if (data.pages <= 1) {
-			return data.items;
-		}
-
-		// set up collections
-		const pages: Page[] = [];
-
-		let index = 0;
-		let page = 0;
-		let collection = null;
-		for (const db of data.items) {
-			if (index === PAGE_SIZE || !collection) {
-				collection = new Page(
-					`Page ${page + 1}`,
-					page + 1 === 1
-						? vscode.TreeItemCollapsibleState.Expanded
-						: vscode.TreeItemCollapsibleState.Collapsed
-				);
-
-				index = 0;
-				page += 1;
-
-				pages.push(collection);
-			}
-
-			if (collection !== null) {
-				collection.add(db);
-				++index;
-			}
-		}
-
-		return pages;
 	}
 }

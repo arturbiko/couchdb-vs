@@ -20,5 +20,10 @@ export default class CouchExtension {
 			extensionId('couchDataView'),
 			myTreeProvider
 		);
+
+		vscode.commands.registerCommand(extensionId('refreshDatabases'), async () => {
+			await couchData.fetchAll();
+			myTreeProvider.refresh();
+		});
 	}
 }

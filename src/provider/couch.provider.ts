@@ -21,18 +21,10 @@ export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {
 	}
 
 	getChildren(element?: CouchItem): CouchItem[] {
-		if (!element) {
-			return this.model.listDatabases();
-		}
-
-		if (element && element.isPage) {
-			return (element as Page).list();
-		}
-
-		return [];
+		return this.model.listDatabases();
 	}
 
 	refresh(): void {
-		// this._onDidChangeTreeData.fire();
+		this._onDidChangeTreeData.fire(undefined);
 	}
 }

@@ -56,10 +56,27 @@
 				}
 			]
 		},
+		"menus": {
+			"view/title": [
+				{
+					"command": "couchDBVS.refreshDatabases",
+					"when": "view == couchDBVS.couchDataView",
+					"group": "navigation"
+				}
+			]
+		},
 		"commands": [
 			{
 				"command": "helloworld.helloWorld",
 				"title": "Hello World"
+			},
+			{
+				"command": "couchDBVS.refreshDatabases",
+				"title": "Refresh",
+				"icon": {
+					"light": "assets/light/refresh.svg",
+					"dark": "assets/dark/refresh.svg"
+				}
 			}
 		]
 	},
