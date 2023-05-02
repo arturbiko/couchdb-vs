@@ -52,7 +52,11 @@
 			"couchDataView": [
 				{
 					"id": "couchDBVS.couchDataView",
-					"name": "Data"
+					"name": "Databases"
+				},
+				{
+					"id": "couchDBVS.couchDocumentList",
+					"name": "Documents"
 				}
 			]
 		},
@@ -77,6 +81,10 @@
 					"light": "assets/light/refresh.svg",
 					"dark": "assets/dark/refresh.svg"
 				}
+			},
+			{
+				"command": "couchDBVS.selectDatabase",
+				"title": "select"
 			}
 		]
 	},

@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import CouchItem from './couch.item';
-import { Page } from './couch.collection';
 import CouchModel from './couch.model';
 
 export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {

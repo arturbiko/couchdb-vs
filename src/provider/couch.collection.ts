@@ -1,31 +1,82 @@
 import * as vscode from 'vscode';
 import CouchItem from './couch.item';
 import path = require('path');
+import { extensionId } from '../extension';
 
 export class Page extends CouchItem {
 	public isPage: boolean = true;
 
-	private elements: Row[] = [];
+	public pageNumber: number;
 
-	public add(element: Row): void {
+	private elements: CouchItem[] = [];
+
+	constructor(
+		public readonly label: string,
+		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+		pageNumber: number
+	) {
+		super(label, collapsibleState);
+
+		this.pageNumber = pageNumber;
+	}
+
+	public add(element: Database): void {
 		this.elements.push(element);
 	}
 
-	public list(): Row[] {
+	public list(): CouchItem[] {
 		return this.elements;
 	}
 }
 
-export class Row extends CouchItem {
+export class Database extends CouchItem {
 	constructor(
 		public readonly label: string,
-		public readonly collapsibleState: vscode.TreeItemCollapsibleState
+		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+		public readonly command?: vscode.Command
 	) {
 		super(label, collapsibleState);
+
+		this.command = {
+			command: extensionId('selectDatabase'),
+			arguments: [label],
+			title: 'info',
+		};
 
 		this.iconPath = {
 			light: path.join(__filename, '..', '..', 'assets', 'light', 'db-row.svg'),
 			dark: path.join(__filename, '..', '..', 'assets', 'dark', 'db-row.svg'),
+		};
+	}
+}
+
+export class Document extends CouchItem {
+	constructor(
+		public readonly label: string,
+		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+		public database: string
+	) {
+		super(label, collapsibleState);
+
+		this.database = database;
+
+		this.iconPath = {
+			light: path.join(
+				__filename,
+				'..',
+				'..',
+				'assets',
+				'light',
+				'document-row.svg'
+			),
+			dark: path.join(
+				__filename,
+				'..',
+				'..',
+				'assets',
+				'dark',
+				'document-row.svg'
+			),
 		};
 	}
 }
