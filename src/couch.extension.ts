@@ -10,7 +10,13 @@ export default class CouchExtension {
 
 	private documentView?: vscode.TreeView<CouchItem>;
 
-	activate(context: vscode.ExtensionContext) {
+	private context: vscode.ExtensionContext;
+
+	constructor(context: vscode.ExtensionContext) {
+		this.context = context;
+	}
+
+	activate() {
 		const couchData = new CouchModel();
 		couchData.fetchAll();
 
@@ -22,9 +28,11 @@ export default class CouchExtension {
 			}
 		);
 
-		vscode.window.registerTreeDataProvider(
-			extensionId('couchDataView'),
-			myTreeProvider
+		this.addDisposable(
+			vscode.window.registerTreeDataProvider(
+				extensionId('couchDataView'),
+				myTreeProvider
+			)
 		);
 
 		const couchDocumentProvider = new CouchDocumentProvider(couchData);
@@ -35,29 +43,44 @@ export default class CouchExtension {
 			}
 		);
 
-		vscode.window.registerTreeDataProvider(
-			extensionId('couchDocumentList'),
-			couchDocumentProvider
+		this.addDisposable(
+			vscode.window.registerTreeDataProvider(
+				extensionId('couchDocumentList'),
+				couchDocumentProvider
+			)
 		);
 
-		vscode.commands.registerCommand(extensionId('refreshDatabases'), async () => {
-			await couchData.fetchAll();
-			myTreeProvider.refresh();
-		});
-
-		vscode.commands.registerCommand(
-			extensionId('selectDatabase'),
-			async (name) => {
-				await couchData.fetchDocuments(name);
-				couchDocumentProvider.refresh();
-			}
+		this.addDisposable(
+			vscode.commands.registerCommand(
+				extensionId('refreshDatabases'),
+				async () => {
+					await couchData.fetchAll();
+					myTreeProvider.refresh();
+				}
+			)
 		);
 
-		vscode.commands.registerCommand(extensionId('openSettings'), () => {
-			vscode.commands.executeCommand(
-				'workbench.action.openSettings',
-				extensionId()
-			);
-		});
+		this.addDisposable(
+			vscode.commands.registerCommand(
+				extensionId('selectDatabase'),
+				async (name) => {
+					await couchData.fetchDocuments(name);
+					couchDocumentProvider.refresh();
+				}
+			)
+		);
+
+		this.addDisposable(
+			vscode.commands.registerCommand(extensionId('openSettings'), () => {
+				vscode.commands.executeCommand(
+					'workbench.action.openSettings',
+					extensionId()
+				);
+			})
+		);
+	}
+
+	public addDisposable(disposable: vscode.Disposable): void {
+		this.context.subscriptions.push(disposable);
 	}
 }

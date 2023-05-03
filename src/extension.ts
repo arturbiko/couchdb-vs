@@ -12,10 +12,6 @@ export function extensionId(sub?: string): string {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-	const myExtension = new CouchExtension();
-	myExtension.activate(context);
-}
-
-export function deactivate() {
-	console.log('Your extension has been deactivated.');
+	const myExtension = new CouchExtension(context);
+	myExtension.activate();
 }

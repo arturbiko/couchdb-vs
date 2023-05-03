@@ -4,7 +4,7 @@ CouchDB-VS is a plugin for the Visual Studio Code editor that allows for quick n
 
 ## Features
 
-##### TODO
+###### TODO
 
 ## Getting Started
 
@@ -19,8 +19,9 @@ To configure the plugin, add the following settings to your workspace settings:
 ```
 
 ## Usage
+
 ###### TODO
 
 ## License
 
-##### TODO
+###### TODO
