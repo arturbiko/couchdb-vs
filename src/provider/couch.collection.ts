@@ -51,32 +51,43 @@ export class Database extends CouchItem {
 }
 
 export class Document extends CouchItem {
+	public _id: string;
+
+	public _rev: string;
+
+	public content: string | undefined;
+
+	readonly source: string;
+
 	constructor(
-		public readonly label: string,
-		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-		public database: string
+		public readonly document: { id: string; rev: string },
+		public database: string,
+		public readonly collapsibleState: vscode.TreeItemCollapsibleState
 	) {
-		super(label, collapsibleState);
+		super(document.id, collapsibleState);
 
-		this.database = database;
+		this._id = document.id;
+		this._rev = document.rev;
 
-		this.iconPath = {
-			light: path.join(
-				__filename,
-				'..',
-				'..',
-				'assets',
-				'light',
-				'document-row.svg'
-			),
-			dark: path.join(
-				__filename,
-				'..',
-				'..',
-				'assets',
-				'dark',
-				'document-row.svg'
-			),
+		this.source = database;
+
+		this.iconPath = path.join(
+			__filename,
+			'..',
+			'..',
+			'assets',
+			'dark',
+			'document-row.svg'
+		);
+
+		this.command = {
+			command: extensionId('openDocument'),
+			arguments: [this],
+			title: 'view',
 		};
+	}
+
+	public setContent(content: string | undefined): void {
+		this.content = content;
 	}
 }

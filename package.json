@@ -89,6 +89,10 @@
 			{
 				"command": "couchdb-vs.openSettings",
 				"title": "Settings"
+			},
+			{
+				"command": "couchdb-vs.openDocument",
+				"title": "Open Document"
 			}
 		],
 		"viewsWelcome": [

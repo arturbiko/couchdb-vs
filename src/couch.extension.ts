@@ -4,21 +4,21 @@ import { CouchDataProvider } from './provider/couch.database.provider';
 import { extensionId } from './extension';
 import CouchModel from './provider/couch.model';
 import { CouchDocumentProvider } from './provider/couch.document.provider';
+import { Document } from './provider/couch.collection';
+import EditorService from './service/editor.service';
 
 export default class CouchExtension {
 	private databaseView?: vscode.TreeView<CouchItem>;
 
 	private documentView?: vscode.TreeView<CouchItem>;
 
-	private context: vscode.ExtensionContext;
-
-	constructor(context: vscode.ExtensionContext) {
-		this.context = context;
-	}
+	constructor(private readonly context: vscode.ExtensionContext) {}
 
 	activate() {
 		const couchData = new CouchModel();
 		couchData.fetchAll();
+
+		const editorService = new EditorService(couchData, this.context);
 
 		const myTreeProvider = new CouchDataProvider(couchData);
 		this.databaseView = vscode.window.createTreeView(
@@ -77,6 +77,13 @@ export default class CouchExtension {
 					extensionId()
 				);
 			})
+		);
+
+		this.addDisposable(
+			vscode.commands.registerCommand(
+				extensionId('openDocument'),
+				(document: Document) => editorService.openDocument(document)
+			)
 		);
 	}
 

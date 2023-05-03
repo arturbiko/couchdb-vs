@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import ConnectionService from '../service/connection.service';
 import { Database, Document, Page } from './couch.collection';
 import CouchItem from './couch.item';
+import { DocumentGetResponse } from 'nano';
 
 export const PAGE_SIZE = 10;
 
@@ -106,8 +107,12 @@ export default class CouchModel {
 			},
 		});
 
-		const items = response.rows.map((name) => {
-			return new Document(name.id, vscode.TreeItemCollapsibleState.None, database);
+		const items = response.rows.map((document) => {
+			return new Document(
+				document,
+				database,
+				vscode.TreeItemCollapsibleState.None
+			);
 		});
 
 		this.documents = {
@@ -118,6 +123,16 @@ export default class CouchModel {
 			pages: Math.max(response.total_rows / PAGE_SIZE),
 			offset: response.offset,
 		};
+	}
+
+	public async fetchDocument(
+		document: Document
+	): Promise<DocumentGetResponse | undefined> {
+		const couch = await this.connection.instance();
+
+		const db = couch.use(document.database);
+
+		return db.get(document._id, {});
 	}
 
 	private async fetchDatabases(): Promise<void> {
