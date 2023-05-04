@@ -12,8 +12,6 @@ export function extensionId(sub?: string): string {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log(extensionId());
-
 	const myExtension = new CouchExtension(context);
 	myExtension.activate();
 }

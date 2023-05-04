@@ -14,24 +14,25 @@ export default class CouchExtension {
 
 	constructor(private readonly context: vscode.ExtensionContext) {}
 
-	activate() {
+	public activate(): void {
 		const couchData = new CouchModel();
-		couchData.fetchAll();
 
 		const editorService = new EditorService(couchData, this.context);
 
-		const myTreeProvider = new CouchDataProvider(couchData);
+		const couchDataProvider = new CouchDataProvider(couchData);
 		this.databaseView = vscode.window.createTreeView(
 			extensionId('couchDataView'),
 			{
-				treeDataProvider: myTreeProvider,
+				treeDataProvider: couchDataProvider,
 			}
 		);
+
+		couchData.fetchDatabases();
 
 		this.addDisposable(
 			vscode.window.registerTreeDataProvider(
 				extensionId('couchDataView'),
-				myTreeProvider
+				couchDataProvider
 			)
 		);
 
@@ -54,8 +55,8 @@ export default class CouchExtension {
 			vscode.commands.registerCommand(
 				extensionId('refreshDatabases'),
 				async () => {
-					await couchData.fetchAll();
-					myTreeProvider.refresh();
+					await couchData.fetchDatabases();
+					couchDataProvider.refresh();
 				}
 			)
 		);
@@ -64,8 +65,15 @@ export default class CouchExtension {
 			vscode.commands.registerCommand(
 				extensionId('selectDatabase'),
 				async (name) => {
-					await couchData.fetchDocuments(name);
-					couchDocumentProvider.refresh();
+					try {
+						await couchData.fetchDocuments(name);
+					} catch (error: any) {
+						await couchData.fetchDatabases();
+
+						vscode.window.showErrorMessage(error.message);
+					}
+
+					couchDataProvider.refresh();
 				}
 			)
 		);

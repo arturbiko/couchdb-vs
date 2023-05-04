@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import CouchItem from './couch.item';
 import path = require('path');
 import { extensionId } from '@/extension';
+import { CouchResponse } from '@/api/couch.interface';
 
 export class Page extends CouchItem {
 	public isPage: boolean = true;
@@ -59,7 +60,7 @@ export class Document extends CouchItem {
 	public source: string;
 
 	constructor(
-		document: { id: string; rev: string },
+		document: CouchResponse,
 		source: string,
 		collapsibleState: vscode.TreeItemCollapsibleState
 	) {

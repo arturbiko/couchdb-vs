@@ -3,6 +3,7 @@ import ConnectionService from '@service/connection.service';
 import { Database, Document, Page } from './couch.collection';
 import CouchItem from './couch.item';
 import { DocumentGetResponse } from 'nano';
+import { CouchResponse } from '@api/couch.interface';
 
 export const PAGE_SIZE = 10;
 
@@ -43,16 +44,6 @@ export default class CouchModel {
 			pages: 0,
 			offset: 0,
 		};
-	}
-
-	public async fetchAll(): Promise<void> {
-		try {
-			await this.fetchDatabases();
-		} catch (error: any) {
-			vscode.window.showErrorMessage(
-				`Error fetching from CouchDB: ${error.message}`
-			);
-		}
 	}
 
 	public listDatabases(): CouchItem[] {
@@ -98,7 +89,7 @@ export default class CouchModel {
 
 		const couch = await this.connection.instance();
 
-		const response: DocumentsResponseData = await couch.request({
+		const response = await couch.request({
 			db: database,
 			path: '_all_docs',
 			method: 'get',
@@ -107,7 +98,7 @@ export default class CouchModel {
 			},
 		});
 
-		const items = response.rows.map((document) => {
+		const items = response.rows.map((document: CouchResponse) => {
 			return new Document(
 				document,
 				database,
@@ -135,7 +126,7 @@ export default class CouchModel {
 		return db.get(document._id, {});
 	}
 
-	private async fetchDatabases(): Promise<void> {
+	public async fetchDatabases(): Promise<void> {
 		const couch = await this.connection.instance();
 
 		const items = (await couch.db.list()).map((name) => {
