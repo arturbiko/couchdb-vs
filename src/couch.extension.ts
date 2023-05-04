@@ -74,6 +74,7 @@ export default class CouchExtension {
 					}
 
 					couchDataProvider.refresh();
+					couchDocumentProvider.refresh();
 				}
 			)
 		);
@@ -90,7 +91,26 @@ export default class CouchExtension {
 		this.addDisposable(
 			vscode.commands.registerCommand(
 				extensionId('openDocument'),
-				(document: Document) => editorService.openDocument(document)
+				async (document: Document) => {
+					try {
+						const data = await couchData.fetchDocument(document);
+
+						if (data._deleted) {
+							vscode.window.showErrorMessage('Document was removed.');
+							couchData.fetchDocuments(document.source);
+						} else {
+							document.setContent(JSON.stringify(data, null, '\t'));
+							editorService.openDocument(document);
+						}
+					} catch (error: any) {
+						await couchData.fetchDatabases();
+
+						vscode.window.showErrorMessage(error.message);
+					}
+
+					couchDataProvider.refresh();
+					couchDocumentProvider.refresh();
+				}
 			)
 		);
 	}

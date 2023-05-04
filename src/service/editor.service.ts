@@ -29,9 +29,6 @@ export default class EditorService {
 			return;
 		}
 
-		const data = await this.model.fetchDocument(document);
-		document.setContent(JSON.stringify(data, null, '\t'));
-
 		const uri = vscode.Uri.parse(
 			`${DocumentEditorProvider.scheme}:${document._id}`
 		);

@@ -116,9 +116,7 @@ export default class CouchModel {
 		};
 	}
 
-	public async fetchDocument(
-		document: Document
-	): Promise<DocumentGetResponse | undefined> {
+	public async fetchDocument(document: Document): Promise<DocumentGetResponse> {
 		const couch = await this.connection.instance();
 
 		const db = couch.use(document.source);
