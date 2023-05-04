@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { Document } from '../provider/couch.collection';
-import CouchModel from '../provider/couch.model';
-import DocumentEditorProvider from '../provider/document.editor.provider';
+import { Document } from '@provider/couch.collection';
+import CouchModel from '@provider/couch.model';
+import DocumentEditorProvider from '@provider/couch.editor.provider';
 
 export default class EditorService {
 	public onDidChange?: vscode.Event<vscode.Uri> | undefined;

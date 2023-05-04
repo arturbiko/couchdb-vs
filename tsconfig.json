@@ -6,7 +6,12 @@
 		"outDir": "out",
 		"sourceMap": true,
 		"strict": true,
-		"rootDir": "src"
+		"rootDir": "src",
+		"paths": { 
+ 		    "@provider/*": ["./src/provider/*"],
+			"@service/*": ["./src/service/*"],
+			"@/*": ["./src/*"]
+		}
 	},
 	"exclude": ["node_modules", ".vscode-test"]
 }

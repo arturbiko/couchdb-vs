@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import nano = require('nano');
-import { extensionId } from '../extension';
+import { extensionId } from '@/extension';
 
 export default class ConnectionService {
 	private connection: nano.ServerScope | undefined;

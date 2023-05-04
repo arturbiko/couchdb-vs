@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import CouchItem from './couch.item';
 import path = require('path');
-import { extensionId } from '../extension';
+import { extensionId } from '@/extension';
 
 export class Page extends CouchItem {
 	public isPage: boolean = true;
@@ -11,8 +11,8 @@ export class Page extends CouchItem {
 	private elements: CouchItem[] = [];
 
 	constructor(
-		public readonly label: string,
-		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+		label: string,
+		collapsibleState: vscode.TreeItemCollapsibleState,
 		pageNumber: number
 	) {
 		super(label, collapsibleState);
@@ -20,7 +20,7 @@ export class Page extends CouchItem {
 		this.pageNumber = pageNumber;
 	}
 
-	public add(element: Database): void {
+	public add(element: CouchItem): void {
 		this.elements.push(element);
 	}
 
@@ -40,43 +40,41 @@ export class Database extends CouchItem {
 		this.command = {
 			command: extensionId('selectDatabase'),
 			arguments: [label],
-			title: 'info',
+			title: 'select',
 		};
 
-		this.iconPath = {
-			light: path.join(__filename, '..', '..', 'assets', 'light', 'db-row.svg'),
-			dark: path.join(__filename, '..', '..', 'assets', 'dark', 'db-row.svg'),
-		};
+		this.iconPath = path.join(__filename, '..', '..', 'resources', 'db-row.svg');
 	}
 }
 
 export class Document extends CouchItem {
+	public isDocument: boolean = true;
+
 	public _id: string;
 
 	public _rev: string;
 
 	public content: string | undefined;
 
-	readonly source: string;
+	public source: string;
 
 	constructor(
-		public readonly document: { id: string; rev: string },
-		public database: string,
-		public readonly collapsibleState: vscode.TreeItemCollapsibleState
+		document: { id: string; rev: string },
+		source: string,
+		collapsibleState: vscode.TreeItemCollapsibleState
 	) {
 		super(document.id, collapsibleState);
 
 		this._id = document.id;
 		this._rev = document.rev;
 
-		this.source = database;
+		this.source = source;
 
 		this.iconPath = path.join(
 			__filename,
 			'..',
 			'..',
-			'assets',
-			'dark',
+			'resources',
 			'document-row.svg'
 		);
 

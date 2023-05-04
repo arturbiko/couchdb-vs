@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import ConnectionService from '../service/connection.service';
+import ConnectionService from '@service/connection.service';
 import { Database, Document, Page } from './couch.collection';
 import CouchItem from './couch.item';
 import { DocumentGetResponse } from 'nano';
@@ -130,7 +130,7 @@ export default class CouchModel {
 	): Promise<DocumentGetResponse | undefined> {
 		const couch = await this.connection.instance();
 
-		const db = couch.use(document.database);
+		const db = couch.use(document.source);
 
 		return db.get(document._id, {});
 	}

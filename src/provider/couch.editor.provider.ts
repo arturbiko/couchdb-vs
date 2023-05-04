@@ -1,12 +1,13 @@
 import * as vscode from 'vscode';
 import { Document } from './couch.collection';
+import CouchItem from './couch.item';
 
 export default class DocumentEditorProvider
 	implements vscode.TextDocumentContentProvider
 {
-	static scheme = 'documents';
+	static scheme = 'couch';
 
-	private _documents = new Map<string, Document>();
+	private _documents = new Map<string, CouchItem>();
 
 	private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
 
@@ -23,14 +24,14 @@ export default class DocumentEditorProvider
 		token: vscode.CancellationToken
 	): vscode.ProviderResult<string> {
 		const document = this._documents.get(uri.toString());
-		if (document) {
-			return document.content;
+		if (document && document.isDocument) {
+			return (document as Document).content;
 		}
 
 		return '';
 	}
 
-	public addDocument(uri: vscode.Uri, document: Document): void {
+	public addDocument(uri: vscode.Uri, document: CouchItem): void {
 		this._documents.set(uri.toString(), document);
 	}
 
