@@ -2,6 +2,9 @@
 	"name": "couchdb-vs",
 	"displayName": "CouchDB Explorer",
 	"version": "0.0.1",
+	"repository": {
+		"url": "https://github.com/arturbiko/couchdb-vs"
+	},
 	"description": "Datamanagement for CouchDB.",
 	"author": {
 		"name": "Artur Biko"
