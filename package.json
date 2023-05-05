@@ -1,11 +1,10 @@
 {
 	"name": "couchdb-vs",
-	"displayName": "CouchDB VS",
+	"displayName": "CouchDB Explorer",
 	"version": "0.0.1",
 	"description": "Datamanagement for CouchDB.",
 	"author": {
-		"name": "Artur Biko",
-		"email": "your.email@example.com"
+		"name": "Artur Biko"
 	},
 	"engines": {
 		"vscode": "^1.74.0"
@@ -99,7 +98,7 @@
 			},
 			{
 				"view": "couchdb-vs.couchDocumentList",
-				"contents": "No databases selected to display any documents. Well played."
+				"contents": "No databases selected to display any documents. Well played. 😎"
 			}
 		]
 	},

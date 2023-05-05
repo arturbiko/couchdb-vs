@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import CouchItem from './couch.item';
-import path = require('path');
-import { extensionId } from '@/extension';
+import { extensionId, iconPath } from '@/extension';
 import { CouchResponse } from '@/api/couch.interface';
 
 export class Page extends CouchItem {
@@ -44,7 +43,7 @@ export class Database extends CouchItem {
 			title: 'select',
 		};
 
-		this.iconPath = path.join(__filename, '..', '..', 'resources', 'db-row.svg');
+		this.iconPath = iconPath('db-row.svg');
 	}
 }
 
@@ -71,13 +70,7 @@ export class Document extends CouchItem {
 
 		this.source = source;
 
-		this.iconPath = path.join(
-			__filename,
-			'..',
-			'..',
-			'resources',
-			'document-row.svg'
-		);
+		this.iconPath = iconPath('document-row.svg');
 
 		this.command = {
 			command: extensionId('openDocument'),
@@ -88,5 +81,11 @@ export class Document extends CouchItem {
 
 	public setContent(content: string | undefined): void {
 		this.content = content;
+	}
+}
+
+export class Empty extends CouchItem {
+	constructor(public readonly label: string) {
+		super(label, vscode.TreeItemCollapsibleState.None);
 	}
 }

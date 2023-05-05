@@ -34,8 +34,6 @@ export default function commands(
 					await couchData.fetchDocuments(name);
 				} catch (error: any) {
 					await couchData.fetchDatabases();
-
-					vscode.window.showErrorMessage(error.message);
 				}
 
 				databaseProvider.refresh();

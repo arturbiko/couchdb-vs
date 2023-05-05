@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import ConnectionService from '@service/connection.service';
-import { Database, Document, Page } from './couch.collection';
+import { Database, Document, Empty, Page } from './couch.collection';
 import CouchItem from './couch.item';
 import { DocumentGetResponse } from 'nano';
 import { CouchResponse } from '@api/couch.interface';
@@ -67,6 +67,10 @@ export default class CouchModel {
 
 		await this.fetchDocuments(this.activeDatabase);
 
+		if (Object.keys(this.documents.items).length === 1) {
+			return this.documents.items[0];
+		}
+
 		const pages: Page[] = [];
 
 		for (let i = 0; i < this.documents.pages; ++i) {
@@ -106,14 +110,24 @@ export default class CouchModel {
 			);
 		});
 
-		this.documents = {
-			items: {
-				...this.documents.items,
-				[response.offset > 0 ? Math.max(response.offset / PAGE_SIZE) : 0]: items,
-			},
-			pages: Math.max(response.total_rows / PAGE_SIZE),
-			offset: response.offset,
-		};
+		if (items.length > 0) {
+			this.documents = {
+				items: {
+					...this.documents.items,
+					[response.offset > 0 ? Math.max(response.offset / PAGE_SIZE) : 0]: items,
+				},
+				pages: Math.max(response.total_rows / PAGE_SIZE),
+				offset: response.offset,
+			};
+		} else {
+			this.documents = {
+				items: {
+					0: [new Empty('No Documents available')],
+				},
+				pages: 0,
+				offset: 0,
+			};
+		}
 	}
 
 	public async fetchDocument(document: Document): Promise<DocumentGetResponse> {
@@ -133,7 +147,7 @@ export default class CouchModel {
 
 		this.databases = {
 			items: {
-				0: items,
+				0: items.length > 0 ? items : [new Empty('No Databases available')],
 			},
 			pages: items.length === 0 ? 1 : Math.max(items.length / PAGE_SIZE),
 			offset: 0,

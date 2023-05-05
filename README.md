@@ -1,10 +1,12 @@
-# CouchDB-VS
+# CouchDB Explorer
 
-CouchDB-VS is a plugin for the Visual Studio Code editor that allows for quick navigation of the CouchDB directly from the editor. With CouchDB-VS, you can easily browse the available databases in your CouchDB instance, view their contents, and edit or delete documents.
+###### This plugin is still in its early development phase. Feautures may or may not contain critical bugs, so use it with caution.
 
-## Features
+CouchDB Explorer is a plugin for the Visual Studio Code editor that allows for quick navigation of the CouchDB directly from the editor. With CouchDB-VS, you can easily browse the available databases in your CouchDB instance, view their contents, and edit or delete documents.
 
-###### TODO
+- Database explorer
+- Manage Databases
+- Manage documents
 
 ## Getting Started
 
@@ -17,10 +19,6 @@ To configure the plugin, add the following settings to your workspace settings:
 "couchdb-vs.username": "<your-couchdb-username>",
 "couchdb-vs.password": "<your-couchdb-password>"
 ```
-
-## Usage
-
-###### TODO
 
 ## License
 
