@@ -6,20 +6,22 @@ import CouchModel from '@provider/couch.model';
 import { CouchDocumentProvider } from '@provider/couch.document.provider';
 import { Document } from '@provider/couch.collection';
 import EditorService from '@service/editor.service';
-
+import commands from './commands';
 export default class CouchExtension {
 	private databaseView?: vscode.TreeView<CouchItem>;
 
 	private documentView?: vscode.TreeView<CouchItem>;
 
-	constructor(private readonly context: vscode.ExtensionContext) {}
+	private couch: CouchModel;
+
+	constructor(private readonly context: vscode.ExtensionContext) {
+		this.couch = new CouchModel();
+	}
 
 	public activate(): void {
-		const couchData = new CouchModel();
+		this.couch.fetchDatabases();
 
-		const editorService = new EditorService(couchData, this.context);
-
-		const couchDataProvider = new CouchDataProvider(couchData);
+		const couchDataProvider = new CouchDataProvider(this.couch);
 		this.databaseView = vscode.window.createTreeView(
 			extensionId('couchDataView'),
 			{
@@ -27,16 +29,14 @@ export default class CouchExtension {
 			}
 		);
 
-		couchData.fetchDatabases();
-
-		this.addDisposable(
+		this.context.subscriptions.push(
 			vscode.window.registerTreeDataProvider(
 				extensionId('couchDataView'),
 				couchDataProvider
 			)
 		);
 
-		const couchDocumentProvider = new CouchDocumentProvider(couchData);
+		const couchDocumentProvider = new CouchDocumentProvider(this.couch);
 		this.documentView = vscode.window.createTreeView(
 			extensionId('couchDocumentList'),
 			{
@@ -44,78 +44,24 @@ export default class CouchExtension {
 			}
 		);
 
-		this.addDisposable(
+		this.context.subscriptions.push(
 			vscode.window.registerTreeDataProvider(
 				extensionId('couchDocumentList'),
 				couchDocumentProvider
 			)
 		);
 
-		this.addDisposable(
-			vscode.commands.registerCommand(
-				extensionId('refreshDatabases'),
-				async () => {
-					await couchData.fetchDatabases();
-					couchDataProvider.refresh();
-				}
-			)
-		);
-
-		this.addDisposable(
-			vscode.commands.registerCommand(
-				extensionId('selectDatabase'),
-				async (name) => {
-					try {
-						await couchData.fetchDocuments(name);
-					} catch (error: any) {
-						await couchData.fetchDatabases();
-
-						vscode.window.showErrorMessage(error.message);
-					}
-
-					couchDataProvider.refresh();
-					couchDocumentProvider.refresh();
-				}
-			)
-		);
-
-		this.addDisposable(
-			vscode.commands.registerCommand(extensionId('openSettings'), () => {
-				vscode.commands.executeCommand(
-					'workbench.action.openSettings',
-					extensionId()
-				);
-			})
-		);
-
-		this.addDisposable(
-			vscode.commands.registerCommand(
-				extensionId('openDocument'),
-				async (document: Document) => {
-					try {
-						const data = await couchData.fetchDocument(document);
-
-						if (data._deleted) {
-							vscode.window.showErrorMessage('Document was removed.');
-							couchData.fetchDocuments(document.source);
-						} else {
-							document.setContent(JSON.stringify(data, null, '\t'));
-							editorService.openDocument(document);
-						}
-					} catch (error: any) {
-						await couchData.fetchDatabases();
-
-						vscode.window.showErrorMessage(error.message);
-					}
-
-					couchDataProvider.refresh();
-					couchDocumentProvider.refresh();
-				}
-			)
-		);
-	}
-
-	public addDisposable(disposable: vscode.Disposable): void {
-		this.context.subscriptions.push(disposable);
+		commands(
+			this.context,
+			this.couch,
+			couchDataProvider,
+			couchDocumentProvider
+		).forEach((command) => {
+			this.context.subscriptions.push(
+				vscode.commands.registerCommand(extensionId(command.id), (...args: any[]) =>
+					command.fn(...args)
+				)
+			);
+		});
 	}
 }
