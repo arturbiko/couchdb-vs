@@ -5,6 +5,7 @@ import { CouchDocumentProvider } from '@provider/couch.document.provider';
 import { extensionId } from './extension';
 import { Document } from '@provider/couch.collection';
 import EditorService from '@service/editor.service';
+import CouchItem from '@provider/couch.item';
 
 export interface Command {
 	id: string;
@@ -15,7 +16,9 @@ export default function commands(
 	context: vscode.ExtensionContext,
 	couchData: CouchModel,
 	databaseProvider: CouchDataProvider,
-	documentProvier: CouchDocumentProvider
+	documentProvider: CouchDocumentProvider,
+	databaseView: vscode.TreeView<CouchItem>,
+	documentView: vscode.TreeView<CouchItem>
 ): Command[] {
 	const editorService = new EditorService(couchData, context);
 
@@ -24,6 +27,9 @@ export default function commands(
 			id: 'refreshDatabases',
 			fn: async () => {
 				await couchData.fetchDatabases();
+
+				databaseView.title = `Databases (${couchData.databaseCount})`;
+
 				databaseProvider.refresh();
 			},
 		},
@@ -36,8 +42,11 @@ export default function commands(
 					await couchData.fetchDatabases();
 				}
 
+				databaseView.title = `Databases (${couchData.databaseCount})`;
+				documentView.title = `Documents (${couchData.documentCount})`;
+
 				databaseProvider.refresh();
-				documentProvier.refresh();
+				documentProvider.refresh();
 			},
 		},
 		{
@@ -66,8 +75,11 @@ export default function commands(
 					await couchData.fetchDatabases();
 				}
 
+				databaseView.title = `Databases (${couchData.databaseCount})`;
+				documentView.title = `Documents (${couchData.documentCount})`;
+
 				databaseProvider.refresh();
-				documentProvier.refresh();
+				documentProvider.refresh();
 			},
 		},
 	];

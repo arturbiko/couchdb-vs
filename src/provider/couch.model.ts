@@ -13,12 +13,7 @@ interface PaginatedData {
 	};
 	pages: number;
 	offset: number;
-}
-
-interface DocumentsResponseData {
-	offset: number;
-	rows: any[];
-	total_rows: number;
+	total: number;
 }
 
 export default class CouchModel {
@@ -37,13 +32,23 @@ export default class CouchModel {
 			items: [],
 			pages: 0,
 			offset: 0,
+			total: 0,
 		};
 
 		this.documents = {
 			items: [],
 			pages: 0,
 			offset: 0,
+			total: 0,
 		};
+	}
+
+	public get documentCount(): number {
+		return this.documents.total;
+	}
+
+	public get databaseCount(): number {
+		return this.databases.total;
 	}
 
 	public listDatabases(): CouchItem[] {
@@ -55,9 +60,12 @@ export default class CouchModel {
 			throw Error('Could not fetch documents.');
 		}
 
-		await this.fetchDocuments(this.activeDatabase, page ? page * PAGE_SIZE : 0);
+		await this.fetchDocuments(
+			this.activeDatabase,
+			page !== undefined ? (page - 1) * PAGE_SIZE : 0
+		);
 
-		return this.documents.items[page || 0];
+		return this.documents.items[page !== undefined ? page - 1 : 0];
 	}
 
 	public async pagedDocuments(): Promise<CouchItem[]> {
@@ -67,7 +75,7 @@ export default class CouchModel {
 
 		await this.fetchDocuments(this.activeDatabase);
 
-		if (Object.keys(this.documents.items).length === 1) {
+		if (this.documents.pages === 0) {
 			return this.documents.items[0];
 		}
 
@@ -80,7 +88,7 @@ export default class CouchModel {
 					i + 1 === 1
 						? vscode.TreeItemCollapsibleState.Expanded
 						: vscode.TreeItemCollapsibleState.Collapsed,
-					i
+					i + 1
 				)
 			);
 		}
@@ -96,9 +104,10 @@ export default class CouchModel {
 		const response = await couch.request({
 			db: database,
 			path: '_all_docs',
-			method: 'get',
+			method: 'post',
 			body: {
-				offset: offset || 0,
+				skip: offset || 0,
+				limit: PAGE_SIZE,
 			},
 		});
 
@@ -114,10 +123,11 @@ export default class CouchModel {
 			this.documents = {
 				items: {
 					...this.documents.items,
-					[response.offset > 0 ? Math.max(response.offset / PAGE_SIZE) : 0]: items,
+					[response.offset > 0 ? Math.round(response.offset / PAGE_SIZE) : 0]: items,
 				},
-				pages: Math.max(response.total_rows / PAGE_SIZE),
+				pages: Math.round(response.total_rows / PAGE_SIZE),
 				offset: response.offset,
+				total: response.total_rows,
 			};
 		} else {
 			this.documents = {
@@ -126,6 +136,7 @@ export default class CouchModel {
 				},
 				pages: 0,
 				offset: 0,
+				total: 0,
 			};
 		}
 	}
@@ -149,8 +160,9 @@ export default class CouchModel {
 			items: {
 				0: items.length > 0 ? items : [new Empty('No Databases available')],
 			},
-			pages: items.length === 0 ? 1 : Math.max(items.length / PAGE_SIZE),
+			pages: items.length === 0 ? 1 : Math.round(items.length / PAGE_SIZE),
 			offset: 0,
+			total: items.length,
 		};
 	}
 }
