@@ -118,6 +118,7 @@
 		"clean-webpack-plugin": "^4.0.0",
 		"copy-webpack-plugin": "^11.0.0",
 		"eslint": "^8.26.0",
+		"mocha": "^10.2.0",
 		"ts-loader": "^9.4.2",
 		"typescript": "^5.0.2",
 		"webpack": "^5.82.0",
