@@ -40,12 +40,13 @@ export default function commands(
 					await couchData.fetchDocuments(name);
 				} catch (error: any) {
 					await couchData.fetchDatabases();
+
+					databaseProvider.refresh();
 				}
 
 				databaseView.title = `Databases (${couchData.databaseCount})`;
 				documentView.title = `Documents (${couchData.documentCount})`;
 
-				databaseProvider.refresh();
 				documentProvider.refresh();
 			},
 		},
@@ -73,12 +74,13 @@ export default function commands(
 					}
 				} catch (error: any) {
 					await couchData.fetchDatabases();
+
+					databaseProvider.refresh();
 				}
 
 				databaseView.title = `Databases (${couchData.databaseCount})`;
 				documentView.title = `Documents (${couchData.documentCount})`;
 
-				databaseProvider.refresh();
 				documentProvider.refresh();
 			},
 		},

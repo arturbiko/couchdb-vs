@@ -21,6 +21,12 @@
 		"configuration": {
 			"title": "CouchDB Connection",
 			"properties": {
+				"couchdb-vs.protocol": {
+					"type": "string",
+					"description": "Used protocol. Usually either HTTPS or HTTP",
+					"default": "https",
+					"scope": "workspace"
+				},
 				"couchdb-vs.host": {
 					"type": "string",
 					"description": "The URL of the host",
@@ -73,10 +79,6 @@
 		},
 		"commands": [
 			{
-				"command": "helloworld.helloWorld",
-				"title": "Hello World"
-			},
-			{
 				"command": "couchdb-vs.refreshDatabases",
 				"title": "Refresh",
 				"icon": "./resources/refresh.svg"
@@ -97,11 +99,11 @@
 		"viewsWelcome": [
 			{
 				"view": "couchdb-vs.couchDataView",
-				"contents": "Please configure the connection settings and try to refresh the data. \n[Settings](command:couchdb-vs.openSettings)"
+				"contents": "Please configure the connection settings and try refreshing the data. \n[Settings](command:couchdb-vs.openSettings)"
 			},
 			{
 				"view": "couchdb-vs.couchDocumentList",
-				"contents": "No databases selected to display any documents. Well played. 😎"
+				"contents": "No databases selected to display anything. Well played. 😎"
 			}
 		]
 	},

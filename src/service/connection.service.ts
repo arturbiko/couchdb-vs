@@ -17,15 +17,16 @@ export default class ConnectionService {
 
 	private async connect(): Promise<nano.ServerScope> {
 		const config = vscode.workspace.getConfiguration(extensionId());
+		const protocol = config.get<string>('protocol');
 		const host = config.get<string>('host');
 		const username = config.get<string>('username');
 		const password = config.get<string>('password');
 
-		if (!host || !username || !password) {
+		if (!host || !username || !password || !protocol) {
 			throw new Error('Missing connection settings.');
 		}
 
-		const dbUrl = `http://${username}:${password}@${host}`;
+		const dbUrl = `${protocol}://${username}:${password}@${host}`;
 
 		const connection = nano(dbUrl);
 
@@ -33,7 +34,7 @@ export default class ConnectionService {
 			await connection.info();
 		} catch (error) {
 			throw new Error(
-				'Trouble accessing CouchDB. Check your connections settings and try connecting again.'
+				'Trouble accessing CouchDB. Check your connections settings and try again.'
 			);
 		}
 
