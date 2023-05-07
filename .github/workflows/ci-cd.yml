@@ -1,0 +1,27 @@
+name: Development
+
+on:
+ push:
+  branches: [chore-ci-cd-pipeline]
+
+jobs:
+ test:
+  runs-on: ubuntu-latest
+
+  steps:
+   - uses: actions/checkout@v3
+   - name: Setup Node.js
+     uses: actions/setup-node@v3
+     with:
+      node-version: '19.x'
+   - name: Cache node_modules directory
+     uses: actions/cache@v3
+     id: node_modules-cache
+     with:
+      path: node_modules
+      key: ${{ runner.OS }}-build-${{ hashFiles('**/package.json') }}-${{ hashFiles('**/package-lock.json') }}
+   - name: Install NPM packages
+     if: steps.node_modules-cache.outputs.cache-hit != 'true'
+     run: npm ci
+   - name: Run tests
+     run: npm run test
