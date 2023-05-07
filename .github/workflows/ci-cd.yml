@@ -29,3 +29,5 @@ jobs:
       echo ">>> Started xvfb"
    - name: Run tests
      run: npm run test
+     env:
+      DISPLAY: ':99.0'
