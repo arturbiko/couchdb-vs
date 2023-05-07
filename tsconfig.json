@@ -7,12 +7,7 @@
 		"sourceMap": true,
 		"strict": true,
 		"rootDir": "src",
-		"paths": { 
-			"@api/*": ["./src/api/*"],
- 		    "@provider/*": ["./src/provider/*"],
-			"@service/*": ["./src/service/*"],
-			"@/*": ["./src/*"]
-		}
+		"baseUrl": "./"
 	},
 	"exclude": ["node_modules", ".vscode-test"]
 }

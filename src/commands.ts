@@ -1,15 +1,15 @@
 import * as vscode from 'vscode';
-import CouchModel from '@provider/couch.model';
-import { CouchDataProvider } from '@provider/couch.database.provider';
-import { CouchDocumentProvider } from '@provider/couch.document.provider';
+import CouchModel from './provider/couch.model';
+import { CouchDataProvider } from './provider/couch.database.provider';
+import { CouchDocumentProvider } from './provider/couch.document.provider';
 import { extensionId } from './extension';
-import { Document } from '@provider/couch.collection';
-import EditorService from '@service/editor.service';
-import CouchItem from '@provider/couch.item';
+import { Document } from './provider/couch.collection';
+import EditorService from './service/editor.service';
+import CouchItem from './provider/couch.item';
 
 export interface Command {
 	id: string;
-	fn: Function;
+	fn: (...args: any[]) => void;
 }
 
 export default function commands(

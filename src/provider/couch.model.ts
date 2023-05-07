@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
-import ConnectionService from '@service/connection.service';
+import ConnectionService from '../service/connection.service';
 import { Database, Document, Empty, Page } from './couch.collection';
 import CouchItem from './couch.item';
 import { DocumentGetResponse } from 'nano';
-import { CouchResponse } from '@api/couch.interface';
+import { CouchResponse } from '../api/couch.interface';
 
 export const PAGE_SIZE = 10;
 
@@ -17,26 +17,26 @@ interface PaginatedData {
 }
 
 export default class CouchModel {
-	private connection: ConnectionService;
-
 	private databases: PaginatedData;
 
 	private documents: PaginatedData;
 
 	private activeDatabase: string | undefined;
 
-	constructor() {
-		this.connection = new ConnectionService();
-
+	constructor(private readonly connection: ConnectionService) {
 		this.databases = {
-			items: [],
+			items: {
+				0: [],
+			},
 			pages: 0,
 			offset: 0,
 			total: 0,
 		};
 
 		this.documents = {
-			items: [],
+			items: {
+				0: [],
+			},
 			pages: 0,
 			offset: 0,
 			total: 0,

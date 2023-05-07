@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { Document } from '@provider/couch.collection';
-import CouchModel from '@provider/couch.model';
-import DocumentEditorProvider from '@provider/couch.editor.provider';
+import { Document } from '../provider/couch.collection';
+import CouchModel from '../provider/couch.model';
+import DocumentEditorProvider from '../provider/couch.editor.provider';
 
 export default class EditorService {
 	private provider: DocumentEditorProvider;

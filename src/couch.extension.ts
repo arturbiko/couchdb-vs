@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
-import CouchItem from '@provider/couch.item';
-import { CouchDataProvider } from '@provider/couch.database.provider';
-import { extensionId } from '@/extension';
-import CouchModel from '@provider/couch.model';
-import { CouchDocumentProvider } from '@provider/couch.document.provider';
+import CouchItem from './provider/couch.item';
+import { CouchDataProvider } from './provider/couch.database.provider';
+import { extensionId } from './extension';
+import CouchModel from './provider/couch.model';
+import { CouchDocumentProvider } from './provider/couch.document.provider';
 import commands from './commands';
+import ConnectionService from './service/connection.service';
 export default class CouchExtension {
 	private databaseView?: vscode.TreeView<CouchItem>;
 
@@ -13,7 +14,8 @@ export default class CouchExtension {
 	private couch: CouchModel;
 
 	constructor(private readonly context: vscode.ExtensionContext) {
-		this.couch = new CouchModel();
+		const connection = new ConnectionService();
+		this.couch = new CouchModel(connection);
 	}
 
 	public activate(): void {

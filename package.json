@@ -108,27 +108,42 @@
 		]
 	},
 	"dependencies": {
+		"@types/sinon": "^10.0.14",
 		"nano": "10.1.2"
 	},
 	"devDependencies": {
+		"@types/chai": "^4.3.5",
+		"@types/mocha": "^10.0.1",
 		"@types/node": "^16.11.7",
 		"@types/vscode": "^1.73.0",
 		"@typescript-eslint/eslint-plugin": "^5.42.0",
 		"@typescript-eslint/parser": "^5.42.0",
+		"@vscode/test-electron": "^2.3.0",
+		"chai": "^4.3.7",
 		"clean-webpack-plugin": "^4.0.0",
 		"copy-webpack-plugin": "^11.0.0",
 		"eslint": "^8.26.0",
 		"mocha": "^10.2.0",
+		"sinon": "^15.0.4",
 		"ts-loader": "^9.4.2",
+		"ts-node": "^10.9.1",
+		"tsconfig-paths": "^4.2.0",
+		"tsconfig-paths-webpack-plugin": "^4.0.1",
 		"typescript": "^5.0.2",
 		"webpack": "^5.82.0",
 		"webpack-cli": "^5.0.2",
 		"webpack-dev-server": "^4.13.3"
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run build:development",
-		"build:development": "webpack --config webpack.config.js --mode development",
-		"lint": "eslint \"src/**/*.ts\""
+		"vscode:prepublish": "npm run package",
+		"compile": "webpack",
+		"watch": "webpack --watch",
+		"lint": "eslint \"src/**/*.ts\"",
+		"package": "webpack --mode production",
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "npm run compile-tests && npm run compile && npm run lint",
+		"test": "node ./out/test/runTest.js"
 	},
 	"license": "MIT"
 }

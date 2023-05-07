@@ -3,7 +3,7 @@ import path = require('path');
 import CouchExtension from './couch.extension';
 
 export function extensionId(sub?: string): string {
-	let extensionId = 'couchdb-vs';
+	const extensionId = 'couchdb-vs';
 
 	if (!sub) {
 		return extensionId;

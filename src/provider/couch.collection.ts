@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 import CouchItem from './couch.item';
-import { extensionId, iconPath } from '@/extension';
-import { CouchResponse } from '@/api/couch.interface';
+import { extensionId, iconPath } from '../extension';
+import { CouchResponse } from '../api/couch.interface';
 
 export class Page extends CouchItem {
-	public isPage: boolean = true;
+	public isPage = true;
 
 	public pageNumber: number;
 
@@ -48,7 +48,7 @@ export class Database extends CouchItem {
 }
 
 export class Document extends CouchItem {
-	public isDocument: boolean = true;
+	public isDocument = true;
 
 	public _id: string;
 
