@@ -2,7 +2,7 @@ name: Development
 
 on:
  push:
-  branches: [chore-ci-cd-pipeline]
+  branches: [dev]
 
 jobs:
  test:
