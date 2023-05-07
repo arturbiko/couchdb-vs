@@ -1,5 +1,7 @@
 ![CouchDB Explorer](resources/wiki/logo.svg?raw=true 'Title')
 
+![current status](https://img.shields.io/github/package-json/v/arturbiko/couchdb-vs/master) ![test status](https://github.com/arturbiko/couchdb-vs/actions/workflows/main.yml/badge.svg?branch=master)
+
 > ⚠️ This plugin is still in its early development phase. Feautures may contain critical bugs, so use it with caution.
 
 CouchDB Explorer is a plugin for the Visual Studio Code editor that allows for quick navigation of the CouchDB directly from the editor. With CouchDB Explorer, you can easily browse the available databases in your CouchDB instance, view their contents, and edit or delete documents.
