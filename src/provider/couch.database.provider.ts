@@ -3,6 +3,8 @@ import CouchItem from './couch.item';
 import CouchModel from './couch.model';
 
 export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {
+	private initialView = true;
+
 	private _onDidChangeTreeData: vscode.EventEmitter<CouchItem | undefined> =
 		new vscode.EventEmitter<CouchItem | undefined>();
 

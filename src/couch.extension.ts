@@ -18,9 +18,7 @@ export default class CouchExtension {
 		this.couch = new CouchModel(connection);
 	}
 
-	public activate(): void {
-		this.couch.fetchDatabases();
-
+	public async activate(): Promise<void> {
 		const couchDataProvider = new CouchDataProvider(this.couch);
 		this.databaseView = vscode.window.createTreeView(
 			extensionId('couchDataView'),
@@ -65,5 +63,12 @@ export default class CouchExtension {
 				)
 			);
 		});
+
+		// TODO: move somewhere else
+		try {
+			await this.couch.fetchDatabases();
+		} catch (error: any) {
+			vscode.window.showErrorMessage(error.message);
+		}
 	}
 }

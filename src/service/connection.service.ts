@@ -2,18 +2,43 @@ import * as vscode from 'vscode';
 import nano = require('nano');
 import { extensionId } from '../extension';
 
+interface ConnectionSettings {
+	protocol: string;
+	host: string;
+	username: string;
+	password: string;
+}
+
 export default class ConnectionService {
 	private connection: nano.ServerScope | undefined;
 
-	public async instance(): Promise<nano.ServerScope> {
-		if (!this.connection) {
-			this.connection = await this.connect();
-		}
+	private settings: ConnectionSettings | undefined;
 
-		return this.connection;
+	public constructor() {
+		this.writeSettings();
+		this.onConfigurationChange();
 	}
 
-	private async connect(): Promise<nano.ServerScope> {
+	public async instance(): Promise<nano.ServerScope> {
+		if (!this.connection) {
+			await this.connect();
+		}
+
+		return this.connection!;
+	}
+
+	private async onConfigurationChange(): Promise<void> {
+		vscode.workspace.onDidChangeConfiguration(async (event) => {
+			if (!event.affectsConfiguration(extensionId())) {
+				return;
+			}
+
+			this.writeSettings();
+			await this.connect();
+		});
+	}
+
+	private writeSettings(): void {
 		const config = vscode.workspace.getConfiguration(extensionId());
 		const protocol = config.get<string>('protocol');
 		const host = config.get<string>('host');
@@ -21,12 +46,27 @@ export default class ConnectionService {
 		const password = config.get<string>('password');
 
 		if (!host || !username || !password || !protocol) {
+			this.settings = undefined;
+
 			throw new Error('Missing connection settings.');
 		}
 
-		const dbUrl = `${protocol}://${username}:${password}@${host}`;
+		this.settings = {
+			protocol,
+			host,
+			username,
+			password,
+		};
+	}
 
-		const connection = nano(dbUrl);
+	private async connect(): Promise<void> {
+		if (!this.settings) {
+			throw new Error('Missing connection settings.');
+		}
+
+		const connectionUrl = `${this.settings.protocol}://${this.settings.username}:${this.settings.password}@${this.settings.host}`;
+
+		const connection = nano(connectionUrl);
 
 		try {
 			await connection.info();
@@ -36,6 +76,6 @@ export default class ConnectionService {
 			);
 		}
 
-		return connection;
+		this.connection = connection;
 	}
 }

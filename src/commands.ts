@@ -26,16 +26,24 @@ export default function commands(
 		{
 			id: 'refreshDatabases',
 			fn: async () => {
-				await couchData.fetchDatabases();
+				vscode.window.showInformationMessage('Fetching databases...');
 
-				databaseView.title = `Databases (${couchData.databaseCount})`;
+				try {
+					await couchData.fetchDatabases();
 
-				databaseProvider.refresh();
+					databaseView.title = `Databases (${couchData.databaseCount})`;
+
+					databaseProvider.refresh();
+				} catch (error: any) {
+					vscode.window.showErrorMessage(error.message);
+				}
 			},
 		},
 		{
 			id: 'selectDatabase',
 			fn: async (name: string) => {
+				vscode.window.showInformationMessage('Fetching documents...');
+
 				try {
 					await couchData.fetchDocuments(name);
 				} catch (error: any) {

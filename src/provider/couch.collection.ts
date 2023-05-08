@@ -43,7 +43,7 @@ export class Database extends CouchItem {
 			title: 'select',
 		};
 
-		this.iconPath = iconPath('db-row.svg');
+		this.iconPath = iconPath('db-row.png');
 	}
 }
 
@@ -70,7 +70,7 @@ export class Document extends CouchItem {
 
 		this.source = source;
 
-		this.iconPath = iconPath('document-row.svg');
+		this.iconPath = iconPath('document-row.png');
 
 		this.command = {
 			command: extensionId('openDocument'),

@@ -28,7 +28,7 @@ module.exports = () => {
           exclude: /node_modules/,
         },
         {
-          test: /\.svg$/,
+          test: /\.png$/,
           loader: 'file-loader',
           options: {
             name: '[name].[ext]',
@@ -38,7 +38,8 @@ module.exports = () => {
       ],
     },
     resolve: {
-      extensions: ['.ts', '.js']
+      extensions: ['.ts', '.js'],
+      mainFields: ['module', 'main']
     },
     plugins: [
       new CleanWebpackPlugin(),

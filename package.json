@@ -2,9 +2,11 @@
 	"name": "couchdb-vs",
 	"displayName": "CouchDB Explorer",
 	"version": "0.0.1",
+	"publisher": "arbko",
 	"repository": {
 		"url": "https://github.com/arturbiko/couchdb-vs"
 	},
+	"icon": "./resources/market.png",
 	"description": "Datamanagement for CouchDB.",
 	"author": {
 		"name": "Artur Biko"
@@ -13,9 +15,16 @@
 		"vscode": "^1.74.0"
 	},
 	"categories": [
-		"Other"
+		"Other",
+		"Data Science"
 	],
-	"main": "./out/extension.js",
+	"keywords": [
+		"couchdb",
+		"database",
+		"nosql"
+	],
+	"qna": "false",
+	"main": "./dist/extension.js",
 	"activationEvents": [],
 	"contributes": {
 		"configuration": {
@@ -25,34 +34,38 @@
 					"type": "string",
 					"description": "Used protocol. Usually either HTTPS or HTTP",
 					"default": "https",
-					"scope": "workspace"
+					"scope": "workspace",
+					"order": 1
 				},
 				"couchdb-vs.host": {
 					"type": "string",
 					"description": "The URL of the host",
 					"default": "",
-					"scope": "workspace"
+					"scope": "workspace",
+					"order": 2
 				},
 				"couchdb-vs.username": {
 					"type": "string",
 					"description": "The username to use",
 					"default": "",
-					"scope": "workspace"
+					"scope": "workspace",
+					"order": 3
 				},
 				"couchdb-vs.password": {
 					"type": "string",
 					"description": "The password to use",
 					"default": "",
-					"scope": "workspace"
+					"scope": "workspace",
+					"order": 4
 				}
 			}
 		},
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"icon": "./resources/icon.svg",
+					"icon": "./resources/icon.png",
 					"id": "couchDataView",
-					"title": "CouchDB"
+					"title": "CouchDB Explorer"
 				}
 			]
 		},
@@ -81,7 +94,7 @@
 			{
 				"command": "couchdb-vs.refreshDatabases",
 				"title": "Refresh",
-				"icon": "./resources/refresh.svg"
+				"icon": "./resources/refresh.png"
 			},
 			{
 				"command": "couchdb-vs.selectDatabase",
@@ -108,10 +121,10 @@
 		]
 	},
 	"dependencies": {
-		"@types/sinon": "^10.0.14",
 		"nano": "10.1.2"
 	},
 	"devDependencies": {
+		"@types/sinon": "^10.0.14",
 		"@types/chai": "^4.3.5",
 		"@types/mocha": "^10.0.1",
 		"@types/node": "^16.11.7",
@@ -119,6 +132,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.42.0",
 		"@typescript-eslint/parser": "^5.42.0",
 		"@vscode/test-electron": "^2.3.0",
+		"@vscode/vsce": "^2.19.0",
 		"chai": "^4.3.7",
 		"clean-webpack-plugin": "^4.0.0",
 		"copy-webpack-plugin": "^11.0.0",
@@ -143,7 +157,8 @@
 		"compile-tests": "tsc -p . --outDir out",
 		"watch-tests": "tsc -p . -w --outDir out",
 		"pretest": "npm run compile-tests && npm run compile && npm run lint",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"build:binary": "npm ci && vsce package --pre-release"
 	},
 	"license": "MIT"
 }
