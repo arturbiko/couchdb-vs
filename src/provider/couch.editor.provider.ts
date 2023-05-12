@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Document } from './couch.collection';
-import CouchItem from './couch.item';
+import CouchItem, { ViewType } from './couch.item';
 
 export default class DocumentEditorProvider
 	implements vscode.TextDocumentContentProvider
@@ -24,15 +24,19 @@ export default class DocumentEditorProvider
 		token: vscode.CancellationToken
 	): vscode.ProviderResult<string> {
 		const document = this._documents.get(uri.toString());
-		if (document && document.isDocument) {
+		if (document?.type === ViewType.DOCUMENT) {
 			return (document as Document).content;
 		}
 
 		return '';
 	}
 
-	public addDocument(uri: vscode.Uri, document: CouchItem): void {
-		this._documents.set(uri.toString(), document);
+	public find(uri: vscode.Uri): CouchItem | undefined {
+		return this._documents.get(uri.toString());
+	}
+
+	public set(uri: vscode.Uri, item: CouchItem): void {
+		this._documents.set(uri.toString(), item);
 	}
 
 	public dispose() {

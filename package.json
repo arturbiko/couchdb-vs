@@ -4,6 +4,7 @@
 	"version": "0.0.1",
 	"publisher": "arbko",
 	"repository": {
+		"type": "git",
 		"url": "https://github.com/arturbiko/couchdb-vs"
 	},
 	"icon": "./resources/market.png",

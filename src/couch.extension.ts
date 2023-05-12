@@ -7,10 +7,6 @@ import { CouchDocumentProvider } from './provider/couch.document.provider';
 import commands from './commands';
 import ConnectionService from './service/connection.service';
 export default class CouchExtension {
-	private databaseView?: vscode.TreeView<CouchItem>;
-
-	private documentView?: vscode.TreeView<CouchItem>;
-
 	private couch: CouchModel;
 
 	constructor(private readonly context: vscode.ExtensionContext) {
@@ -20,12 +16,14 @@ export default class CouchExtension {
 
 	public async activate(): Promise<void> {
 		const couchDataProvider = new CouchDataProvider(this.couch);
-		this.databaseView = vscode.window.createTreeView(
+		const databaseView = vscode.window.createTreeView(
 			extensionId('couchDataView'),
 			{
 				treeDataProvider: couchDataProvider,
 			}
 		);
+
+		couchDataProvider.registerView(databaseView);
 
 		this.context.subscriptions.push(
 			vscode.window.registerTreeDataProvider(
@@ -35,12 +33,14 @@ export default class CouchExtension {
 		);
 
 		const couchDocumentProvider = new CouchDocumentProvider(this.couch);
-		this.documentView = vscode.window.createTreeView(
+		const documentView = vscode.window.createTreeView(
 			extensionId('couchDocumentList'),
 			{
 				treeDataProvider: couchDocumentProvider,
 			}
 		);
+
+		couchDocumentProvider.registerView(documentView);
 
 		this.context.subscriptions.push(
 			vscode.window.registerTreeDataProvider(
@@ -53,9 +53,7 @@ export default class CouchExtension {
 			this.context,
 			this.couch,
 			couchDataProvider,
-			couchDocumentProvider,
-			this.databaseView,
-			this.documentView
+			couchDocumentProvider
 		).forEach((command) => {
 			this.context.subscriptions.push(
 				vscode.commands.registerCommand(extensionId(command.id), (...args: any[]) =>

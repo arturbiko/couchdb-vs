@@ -1,11 +1,13 @@
 import * as vscode from 'vscode';
-import CouchItem from './couch.item';
+import CouchItem, { ViewType } from './couch.item';
 import CouchModel from './couch.model';
 import { Page } from './couch.collection';
 
 export class CouchDocumentProvider
 	implements vscode.TreeDataProvider<CouchItem>
 {
+	private view: vscode.TreeView<CouchItem> | undefined;
+
 	private _onDidChangeTreeData: vscode.EventEmitter<CouchItem | undefined> =
 		new vscode.EventEmitter<CouchItem | undefined>();
 
@@ -18,25 +20,35 @@ export class CouchDocumentProvider
 		this.model = model;
 	}
 
-	getTreeItem(element: CouchItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+	public registerView(view: vscode.TreeView<CouchItem>): void {
+		this.view = view;
+	}
+
+	public getTreeItem(
+		element: CouchItem
+	): vscode.TreeItem | Thenable<vscode.TreeItem> {
 		return element;
 	}
 
-	getChildren(
+	public getChildren(
 		element?: CouchItem | undefined
 	): vscode.ProviderResult<CouchItem[]> {
+		if (this.view) {
+			this.view.title = `Documents (${this.model.documentCount})`;
+		}
+
 		if (!element) {
 			return this.model.pagedDocuments();
 		}
 
-		if (element && element.isPage) {
+		if (element?.type === ViewType.PAGE) {
 			return this.model.listDocuments((element as Page).pageNumber);
 		}
 
 		return this.model.pagedDocuments();
 	}
 
-	refresh(): void {
+	public refresh(): void {
 		this._onDidChangeTreeData.fire(undefined);
 	}
 }

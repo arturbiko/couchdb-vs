@@ -1,11 +1,9 @@
 import * as vscode from 'vscode';
-import CouchItem from './couch.item';
+import CouchItem, { ViewType } from './couch.item';
 import { extensionId, iconPath } from '../extension';
 import { CouchResponse } from '../api/couch.interface';
 
 export class Page extends CouchItem {
-	public isPage = true;
-
 	public pageNumber: number;
 
 	private elements: CouchItem[] = [];
@@ -18,6 +16,10 @@ export class Page extends CouchItem {
 		super(label, collapsibleState);
 
 		this.pageNumber = pageNumber;
+	}
+
+	public get type(): ViewType {
+		return ViewType.PAGE;
 	}
 
 	public add(element: CouchItem): void {
@@ -45,11 +47,13 @@ export class Database extends CouchItem {
 
 		this.iconPath = iconPath('db-row.png');
 	}
+
+	public get type(): ViewType {
+		return ViewType.DATABASE;
+	}
 }
 
 export class Document extends CouchItem {
-	public isDocument = true;
-
 	public _id: string;
 
 	public _rev: string;
@@ -66,7 +70,7 @@ export class Document extends CouchItem {
 		super(document.id, collapsibleState);
 
 		this._id = document.id;
-		this._rev = document.rev;
+		this._rev = document.value.rev;
 
 		this.source = source;
 
@@ -79,13 +83,29 @@ export class Document extends CouchItem {
 		};
 	}
 
+	public get type(): ViewType {
+		return ViewType.DOCUMENT;
+	}
+
 	public setContent(content: string | undefined): void {
 		this.content = content;
+	}
+
+	public hasChanged(updated: object): boolean {
+		if (!(updated instanceof Document)) {
+			return false;
+		}
+
+		return this._rev !== updated._rev;
 	}
 }
 
 export class Empty extends CouchItem {
 	constructor(public readonly label: string) {
 		super(label, vscode.TreeItemCollapsibleState.None);
+	}
+
+	public get type(): ViewType {
+		return ViewType.EMPTY;
 	}
 }

@@ -1,6 +1,8 @@
-![CouchDB Explorer](https://github.com/arturbiko/couchdb-vs/blob/dev/resources/wiki/logo.png 'Title')
+# CouchDB Explorer
 
-![current status](https://img.shields.io/github/package-json/v/arturbiko/couchdb-vs/master) ![test status](https://github.com/arturbiko/couchdb-vs/actions/workflows/main.yml/badge.svg?branch=master)
+![version](https://img.shields.io/visual-studio-marketplace/v/arbko.couchdb-vs?label=Visual%20Studio%20Marketplace) ![test status](https://github.com/arturbiko/couchdb-vs/actions/workflows/main.yml/badge.svg?branch=master)
+
+> [Download](https://marketplace.visualstudio.com/items?itemName=arbko.couchdb-vs)
 
 > ⚠️ This plugin is still in its early development phase. Feautures may contain critical bugs, so use it with caution.
 

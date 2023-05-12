@@ -3,10 +3,10 @@ import CouchItem from './couch.item';
 import CouchModel from './couch.model';
 
 export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {
-	private initialView = true;
-
 	private _onDidChangeTreeData: vscode.EventEmitter<CouchItem | undefined> =
 		new vscode.EventEmitter<CouchItem | undefined>();
+
+	private view: vscode.TreeView<CouchItem> | undefined;
 
 	private readonly model: CouchModel;
 
@@ -17,15 +17,23 @@ export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {
 		this.model = model;
 	}
 
-	getTreeItem(element: CouchItem): vscode.TreeItem {
+	public registerView(view: vscode.TreeView<CouchItem>): void {
+		this.view = view;
+	}
+
+	public getTreeItem(element: CouchItem): vscode.TreeItem {
 		return element;
 	}
 
-	getChildren(element?: CouchItem): CouchItem[] {
+	public getChildren(element?: CouchItem): CouchItem[] {
+		if (this.view) {
+			this.view.title = `Databases (${this.model.databaseCount})`;
+		}
+
 		return this.model.listDatabases();
 	}
 
-	refresh(): void {
+	public refresh(): void {
 		this._onDidChangeTreeData.fire(undefined);
 	}
 }

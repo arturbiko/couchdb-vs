@@ -1,4 +1,6 @@
 export interface CouchResponse {
 	id: string;
-	rev: string;
+	value: {
+		rev: string;
+	};
 }

@@ -16,22 +16,16 @@ export default function commands(
 	context: vscode.ExtensionContext,
 	couchData: CouchModel,
 	databaseProvider: CouchDataProvider,
-	documentProvider: CouchDocumentProvider,
-	databaseView: vscode.TreeView<CouchItem>,
-	documentView: vscode.TreeView<CouchItem>
+	documentProvider: CouchDocumentProvider
 ): Command[] {
-	const editorService = new EditorService(couchData, context);
+	const editorService = new EditorService(context);
 
 	return [
 		{
 			id: 'refreshDatabases',
 			fn: async () => {
-				vscode.window.showInformationMessage('Fetching databases...');
-
 				try {
 					await couchData.fetchDatabases();
-
-					databaseView.title = `Databases (${couchData.databaseCount})`;
 
 					databaseProvider.refresh();
 				} catch (error: any) {
@@ -42,8 +36,6 @@ export default function commands(
 		{
 			id: 'selectDatabase',
 			fn: async (name: string) => {
-				vscode.window.showInformationMessage('Fetching documents...');
-
 				try {
 					await couchData.fetchDocuments(name);
 				} catch (error: any) {
@@ -51,9 +43,6 @@ export default function commands(
 
 					databaseProvider.refresh();
 				}
-
-				databaseView.title = `Databases (${couchData.databaseCount})`;
-				documentView.title = `Documents (${couchData.documentCount})`;
 
 				documentProvider.refresh();
 			},
@@ -77,6 +66,7 @@ export default function commands(
 						vscode.window.showErrorMessage('Document was removed.');
 						await couchData.fetchDocuments(document.source);
 					} else {
+						document._rev = data._rev;
 						document.setContent(JSON.stringify(data, null, '\t'));
 						editorService.openDocument(document);
 					}
@@ -85,9 +75,6 @@ export default function commands(
 
 					databaseProvider.refresh();
 				}
-
-				databaseView.title = `Databases (${couchData.databaseCount})`;
-				documentView.title = `Documents (${couchData.documentCount})`;
 
 				documentProvider.refresh();
 			},
