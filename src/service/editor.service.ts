@@ -24,7 +24,7 @@ export default class EditorService {
 		}
 
 		const uri = vscode.Uri.parse(
-			`${DocumentEditorProvider.scheme}:${document._id}`
+			`${DocumentEditorProvider.scheme}:${document.source}_${document._id}.json`
 		);
 		const existing = this.provider.find(uri);
 		this.provider.set(uri, document);
