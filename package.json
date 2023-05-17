@@ -1,7 +1,7 @@
 {
 	"name": "couchdb-vs",
 	"displayName": "CouchDB Explorer",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"publisher": "arbko",
 	"repository": {
 		"type": "git",
