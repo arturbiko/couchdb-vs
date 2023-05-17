@@ -88,6 +88,11 @@
 					"command": "couchdb-vs.refreshDatabases",
 					"when": "view == couchdb-vs.couchDataView",
 					"group": "navigation"
+				},
+				{
+					"command": "couchdb-vs.addDocument",
+					"when": "view == couchdb-vs.couchDocumentList",
+					"group": "navigation"
 				}
 			]
 		},
@@ -95,7 +100,7 @@
 			{
 				"command": "couchdb-vs.refreshDatabases",
 				"title": "Refresh",
-				"icon": "./resources/refresh.png"
+				"icon": "$(search-refresh)"
 			},
 			{
 				"command": "couchdb-vs.selectDatabase",
@@ -108,6 +113,11 @@
 			{
 				"command": "couchdb-vs.openDocument",
 				"title": "Open Document"
+			},
+			{
+				"command": "couchdb-vs.addDocument",
+				"title": "Add Document",
+				"icon": "$(add)"
 			}
 		],
 		"viewsWelcome": [

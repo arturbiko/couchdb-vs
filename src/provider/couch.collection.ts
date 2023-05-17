@@ -11,11 +11,14 @@ export class Page extends CouchItem {
 	constructor(
 		label: string,
 		collapsibleState: vscode.TreeItemCollapsibleState,
-		pageNumber: number
+		pageNumber: number,
+		source: string
 	) {
 		super(label, collapsibleState);
 
 		this.pageNumber = pageNumber;
+
+		this.id = `${source}_${pageNumber}`;
 	}
 
 	public get type(): ViewType {

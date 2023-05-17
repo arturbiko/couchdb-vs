@@ -88,7 +88,8 @@ export default class CouchModel {
 					i + 1 === 1
 						? vscode.TreeItemCollapsibleState.Expanded
 						: vscode.TreeItemCollapsibleState.Collapsed,
-					i + 1
+					i + 1,
+					this.activeDatabase
 				)
 			);
 		}

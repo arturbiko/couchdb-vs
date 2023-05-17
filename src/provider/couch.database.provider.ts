@@ -26,14 +26,14 @@ export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {
 	}
 
 	public getChildren(element?: CouchItem): CouchItem[] {
-		if (this.view) {
-			this.view.title = `Databases (${this.model.databaseCount})`;
-		}
-
 		return this.model.listDatabases();
 	}
 
 	public refresh(): void {
+		if (this.view) {
+			this.view.title = `Databases (${this.model.databaseCount})`;
+		}
+
 		this._onDidChangeTreeData.fire(undefined);
 	}
 }
