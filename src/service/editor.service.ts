@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import filenamify from 'filenamify';
 import { Document } from '../provider/couch.collection';
 import DocumentEditorProvider from '../provider/couch.editor.provider';
 
@@ -23,8 +24,12 @@ export default class EditorService {
 			return;
 		}
 
+		const docName = filenamify(`${document.source}_${document._id}`, {
+			replacement: '_',
+		});
+
 		const uri = vscode.Uri.parse(
-			`${DocumentEditorProvider.scheme}:${document.source}_${document._id}.json`
+			`${DocumentEditorProvider.scheme}:${docName}.json`
 		);
 		const existing = this.provider.find(uri);
 		this.provider.set(uri, document);

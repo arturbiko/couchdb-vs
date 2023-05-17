@@ -81,6 +81,8 @@ export class Document extends CouchItem {
 			arguments: [this],
 			title: 'view',
 		};
+
+		this.description = `_rev: ${this._rev}`;
 	}
 
 	public get type(): ViewType {
