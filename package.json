@@ -122,13 +122,14 @@
 		]
 	},
 	"dependencies": {
+		"filenamify": "^6.0.0",
 		"nano": "10.1.2"
 	},
 	"devDependencies": {
-		"@types/sinon": "^10.0.14",
 		"@types/chai": "^4.3.5",
 		"@types/mocha": "^10.0.1",
 		"@types/node": "^16.11.7",
+		"@types/sinon": "^10.0.14",
 		"@types/vscode": "^1.73.0",
 		"@typescript-eslint/eslint-plugin": "^5.42.0",
 		"@typescript-eslint/parser": "^5.42.0",
