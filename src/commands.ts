@@ -6,6 +6,7 @@ import { extensionId } from './extension';
 import { Document } from './provider/couch.collection';
 import EditorService from './service/editor.service';
 import CouchItem from './provider/couch.item';
+import { validateDatabaseName } from './service/validator.service';
 
 export interface Command {
 	id: string;
@@ -77,6 +78,31 @@ export default function commands(
 				}
 
 				documentProvider.refresh();
+			},
+		},
+		{
+			id: 'addDatabase',
+			fn: async () => {
+				try {
+					let valid = undefined;
+
+					let value: string | undefined = '';
+
+					while (!valid?.valid) {
+						value = await vscode.window.showInputBox({
+							placeHolder: 'Database name',
+							prompt: 'Enter a unique database name',
+						});
+
+						valid = validateDatabaseName(value);
+
+						if (!valid.valid) {
+							vscode.window.showErrorMessage(valid.message || '');
+						}
+					}
+
+					vscode.window.showInformationMessage(`Successfully created ${value}.`);
+				} catch (error: any) {}
 			},
 		},
 	];
