@@ -100,6 +100,10 @@
 					"command": "couchdb-vs.removeDatabase",
 					"when": "view == couchdb-vs.couchDataView",
 					"group": "inline"
+				},
+				{
+					"command": "couchdb-vs.copyItemName",
+					"group": "inline"
 				}
 			]
 		},
@@ -118,6 +122,11 @@
 				"command": "couchdb-vs.removeDatabase",
 				"title": "Remove Database",
 				"icon": "$(trash)"
+			},
+			{
+				"command": "couchdb-vs.copyItemName",
+				"title": "Copy to clipboard",
+				"icon": "$(files)"
 			},
 			{
 				"command": "couchdb-vs.selectDatabase",
