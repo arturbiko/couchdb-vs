@@ -85,7 +85,7 @@ export default class CouchModel {
 			pages.push(
 				new Page(
 					`Page ${i + 1}`,
-					i + 1 === 1
+					i === 0
 						? vscode.TreeItemCollapsibleState.Expanded
 						: vscode.TreeItemCollapsibleState.Collapsed,
 					i + 1,

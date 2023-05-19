@@ -94,6 +94,13 @@
 					"when": "view == couchdb-vs.couchDataView",
 					"group": "navigation"
 				}
+			],
+			"view/item/context": [
+				{
+					"command": "couchdb-vs.removeDatabase",
+					"when": "view == couchdb-vs.couchDataView",
+					"group": "inline"
+				}
 			]
 		},
 		"commands": [
@@ -106,6 +113,11 @@
 				"command": "couchdb-vs.addDatabase",
 				"title": "Add Database",
 				"icon": "$(add)"
+			},
+			{
+				"command": "couchdb-vs.removeDatabase",
+				"title": "Remove Database",
+				"icon": "$(trash)"
 			},
 			{
 				"command": "couchdb-vs.selectDatabase",

@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import CouchItem from './provider/couch.item';
 import { CouchDataProvider } from './provider/couch.database.provider';
 import { extensionId } from './extension';
 import CouchModel from './provider/couch.model';
@@ -53,8 +52,7 @@ export default class CouchExtension {
 			this.context,
 			this.couch,
 			couchDataProvider,
-			couchDocumentProvider,
-			databaseView
+			couchDocumentProvider
 		).forEach((command) => {
 			this.context.subscriptions.push(
 				vscode.commands.registerCommand(extensionId(command.id), (...args: any[]) =>
