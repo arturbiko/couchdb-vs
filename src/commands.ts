@@ -10,7 +10,6 @@ import {
 	validateDatabaseName,
 	validateDatabaseRemoveCondition,
 } from './service/validator.service';
-import clipboard from 'clipboardy';
 
 export interface Command {
 	id: string;
@@ -168,7 +167,9 @@ export default function commands(
 					return;
 				}
 
-				clipboard.writeSync(item.label.toString());
+				const clipboardy = await import('clipboardy');
+
+				clipboardy.default.writeSync(item.label.toString());
 
 				vscode.window.showInformationMessage(`Copied to clipboard 📋`);
 			},
