@@ -172,4 +172,10 @@ export default class CouchModel {
 
 		await couch.db.create(name);
 	}
+
+	public async removeDatabase(name: string): Promise<void> {
+		const couch = await this.connection.instance();
+
+		await couch.db.destroy(name);
+	}
 }

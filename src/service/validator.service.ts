@@ -35,3 +35,18 @@ export function validateDatabaseName(name?: string): ValidationBag {
 
 	return { valid: true };
 }
+
+export function validateDatabaseRemoveCondition(
+	id?: string,
+	name?: string
+): ValidationBag {
+	if (!id || !name || id !== name) {
+		return {
+			valid: false,
+			value: name,
+			message: 'Removing database: Aborted',
+		};
+	}
+
+	return { valid: true };
+}

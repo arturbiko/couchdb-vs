@@ -6,7 +6,10 @@ import { extensionId } from './extension';
 import { Document } from './provider/couch.collection';
 import EditorService from './service/editor.service';
 import CouchItem from './provider/couch.item';
-import { validateDatabaseName } from './service/validator.service';
+import {
+	validateDatabaseName,
+	validateDatabaseRemoveCondition,
+} from './service/validator.service';
 
 export interface Command {
 	id: string;
@@ -115,6 +118,39 @@ export default function commands(
 					await databaseProvider.selectChild(name);
 
 					vscode.window.showInformationMessage(`Successfully created ${name}.`);
+				} catch (error: any) {
+					vscode.window.showErrorMessage(error.message);
+				}
+			},
+		},
+		{
+			id: 'removeDatabase',
+			fn: async (database: CouchItem) => {
+				try {
+					let valid = undefined;
+
+					const name: string | undefined = await vscode.window.showInputBox({
+						placeHolder: database.label?.toString(),
+						prompt: `Enter database name ${database.label?.toString()} to remove it. THIS ACTION IS NOT REVERSIBLE!`,
+					});
+
+					valid = validateDatabaseRemoveCondition(database.id, name);
+
+					if (!valid.valid) {
+						vscode.window.showErrorMessage(valid.message || '');
+
+						return;
+					}
+
+					if (!name) {
+						return;
+					}
+
+					await couchData.removeDatabase(name);
+					await couchData.fetchDatabases();
+					await databaseProvider.refresh();
+
+					vscode.window.showInformationMessage(`Successfully removed ${name}.`);
 				} catch (error: any) {
 					vscode.window.showErrorMessage(error.message);
 				}
