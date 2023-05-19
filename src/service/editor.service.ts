@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import filenamify from 'filenamify';
 import { Document } from '../provider/couch.collection';
 import DocumentEditorProvider from '../provider/couch.editor.provider';
 
@@ -24,9 +23,7 @@ export default class EditorService {
 			return;
 		}
 
-		const docName = filenamify(`${document.source}_${document._id}`, {
-			replacement: '_',
-		});
+		const docName = this.sanitizeName(`${document.source}_${document._id}`);
 
 		const uri = vscode.Uri.parse(
 			`${DocumentEditorProvider.scheme}:${docName}.json`
@@ -46,5 +43,14 @@ export default class EditorService {
 
 		vscode.window.showTextDocument(doc, { preview: false });
 		vscode.languages.setTextDocumentLanguage(doc, 'json');
+	}
+
+	private sanitizeName(name: string): string {
+		const forbiddenSymbols = /<|>|:|\/|\\|\||\?|\*/g;
+		if (forbiddenSymbols.test(name)) {
+			return name.replace(forbiddenSymbols, '');
+		}
+
+		return name;
 	}
 }
