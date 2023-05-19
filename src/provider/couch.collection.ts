@@ -11,11 +11,14 @@ export class Page extends CouchItem {
 	constructor(
 		label: string,
 		collapsibleState: vscode.TreeItemCollapsibleState,
-		pageNumber: number
+		pageNumber: number,
+		source: string
 	) {
 		super(label, collapsibleState);
 
 		this.pageNumber = pageNumber;
+
+		this.id = `${source}_${pageNumber}`;
 	}
 
 	public get type(): ViewType {
@@ -38,6 +41,8 @@ export class Database extends CouchItem {
 		public readonly command?: vscode.Command
 	) {
 		super(label, collapsibleState);
+
+		this.id = label;
 
 		this.command = {
 			command: extensionId('selectDatabase'),
@@ -81,6 +86,8 @@ export class Document extends CouchItem {
 			arguments: [this],
 			title: 'view',
 		};
+
+		this.description = `_rev: ${this._rev}`;
 	}
 
 	public get type(): ViewType {

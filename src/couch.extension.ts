@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import CouchItem from './provider/couch.item';
 import { CouchDataProvider } from './provider/couch.database.provider';
 import { extensionId } from './extension';
 import CouchModel from './provider/couch.model';
@@ -65,6 +64,7 @@ export default class CouchExtension {
 		// TODO: move somewhere else
 		try {
 			await this.couch.fetchDatabases();
+			couchDataProvider.refresh();
 		} catch (error: any) {
 			vscode.window.showErrorMessage(error.message);
 		}

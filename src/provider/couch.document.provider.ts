@@ -33,10 +33,6 @@ export class CouchDocumentProvider
 	public getChildren(
 		element?: CouchItem | undefined
 	): vscode.ProviderResult<CouchItem[]> {
-		if (this.view) {
-			this.view.title = `Documents (${this.model.documentCount})`;
-		}
-
 		if (!element) {
 			return this.model.pagedDocuments();
 		}
@@ -49,6 +45,10 @@ export class CouchDocumentProvider
 	}
 
 	public refresh(): void {
+		if (this.view && this.model.documentCount > 0) {
+			this.view.title = `Documents (${this.model.documentCount})`;
+		}
+
 		this._onDidChangeTreeData.fire(undefined);
 	}
 }

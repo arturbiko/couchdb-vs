@@ -23,8 +23,10 @@ export default class EditorService {
 			return;
 		}
 
+		const docName = this.sanitizeName(`${document.source}_${document._id}`);
+
 		const uri = vscode.Uri.parse(
-			`${DocumentEditorProvider.scheme}:${document.source}_${document._id}.json`
+			`${DocumentEditorProvider.scheme}:${docName}.json`
 		);
 		const existing = this.provider.find(uri);
 		this.provider.set(uri, document);
@@ -41,5 +43,14 @@ export default class EditorService {
 
 		vscode.window.showTextDocument(doc, { preview: false });
 		vscode.languages.setTextDocumentLanguage(doc, 'json');
+	}
+
+	private sanitizeName(name: string): string {
+		const forbiddenSymbols = /<|>|:|\/|\\|\||\?|\*/g;
+		if (forbiddenSymbols.test(name)) {
+			return name.replace(forbiddenSymbols, '');
+		}
+
+		return name;
 	}
 }

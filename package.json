@@ -88,6 +88,22 @@
 					"command": "couchdb-vs.refreshDatabases",
 					"when": "view == couchdb-vs.couchDataView",
 					"group": "navigation"
+				},
+				{
+					"command": "couchdb-vs.addDatabase",
+					"when": "view == couchdb-vs.couchDataView",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "couchdb-vs.removeDatabase",
+					"when": "view == couchdb-vs.couchDataView",
+					"group": "inline"
+				},
+				{
+					"command": "couchdb-vs.copyItemName",
+					"group": "inline"
 				}
 			]
 		},
@@ -95,7 +111,22 @@
 			{
 				"command": "couchdb-vs.refreshDatabases",
 				"title": "Refresh",
-				"icon": "./resources/refresh.png"
+				"icon": "$(search-refresh)"
+			},
+			{
+				"command": "couchdb-vs.addDatabase",
+				"title": "Add Database",
+				"icon": "$(add)"
+			},
+			{
+				"command": "couchdb-vs.removeDatabase",
+				"title": "Remove Database",
+				"icon": "$(trash)"
+			},
+			{
+				"command": "couchdb-vs.copyItemName",
+				"title": "Copy to clipboard",
+				"icon": "$(files)"
 			},
 			{
 				"command": "couchdb-vs.selectDatabase",
@@ -122,13 +153,14 @@
 		]
 	},
 	"dependencies": {
+		"clipboardy": "^3.0.0",
 		"nano": "10.1.2"
 	},
 	"devDependencies": {
-		"@types/sinon": "^10.0.14",
 		"@types/chai": "^4.3.5",
 		"@types/mocha": "^10.0.1",
 		"@types/node": "^16.11.7",
+		"@types/sinon": "^10.0.14",
 		"@types/vscode": "^1.73.0",
 		"@typescript-eslint/eslint-plugin": "^5.42.0",
 		"@typescript-eslint/parser": "^5.42.0",

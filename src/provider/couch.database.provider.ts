@@ -21,19 +21,37 @@ export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {
 		this.view = view;
 	}
 
+	public getParent(element: CouchItem): vscode.ProviderResult<CouchItem> {
+		return undefined;
+	}
+
 	public getTreeItem(element: CouchItem): vscode.TreeItem {
 		return element;
 	}
 
 	public getChildren(element?: CouchItem): CouchItem[] {
-		if (this.view) {
-			this.view.title = `Databases (${this.model.databaseCount})`;
-		}
-
 		return this.model.listDatabases();
 	}
 
+	public selectChild(id: string): void {
+		if (!this.view) {
+			return;
+		}
+
+		const database = this.model.listDatabases().find((db) => db.id === id);
+
+		if (!database) {
+			return;
+		}
+
+		this.view.reveal(database, { focus: true, select: true });
+	}
+
 	public refresh(): void {
+		if (this.view && this.model.databaseCount > 0) {
+			this.view.title = `Databases (${this.model.databaseCount})`;
+		}
+
 		this._onDidChangeTreeData.fire(undefined);
 	}
 }
