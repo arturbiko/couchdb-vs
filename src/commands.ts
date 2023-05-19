@@ -41,7 +41,8 @@ export default function commands(
 			id: 'selectDatabase',
 			fn: async (name: string) => {
 				try {
-					await couchData.fetchDocuments(name);
+					couchData.setActiveDatabase(name);
+					await couchData.fetchDocuments();
 				} catch (error: any) {
 					await couchData.fetchDatabases();
 
@@ -68,7 +69,7 @@ export default function commands(
 
 					if (data._deleted) {
 						vscode.window.showErrorMessage('Document was removed.');
-						await couchData.fetchDocuments(document.source);
+						await couchData.fetchDocuments();
 					} else {
 						document._rev = data._rev;
 						document.setContent(JSON.stringify(data, null, '\t'));
@@ -147,7 +148,10 @@ export default function commands(
 					}
 
 					await couchData.removeDatabase(name);
+					couchData.setActiveDatabase(undefined);
 					await couchData.fetchDatabases();
+
+					await documentProvider.refresh();
 					await databaseProvider.refresh();
 
 					vscode.window.showInformationMessage(`Successfully removed ${name}.`);

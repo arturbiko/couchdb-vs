@@ -51,19 +51,20 @@ export default class CouchModel {
 		return this.databases.total;
 	}
 
+	public setActiveDatabase(name?: string): void {
+		this.activeDatabase = name;
+	}
+
 	public listDatabases(): CouchItem[] {
 		return this.databases.items[0];
 	}
 
 	public async listDocuments(page?: number): Promise<CouchItem[]> {
 		if (!this.activeDatabase) {
-			throw Error('Could not fetch documents.');
+			return [];
 		}
 
-		await this.fetchDocuments(
-			this.activeDatabase,
-			page !== undefined ? (page - 1) * PAGE_SIZE : 0
-		);
+		await this.fetchDocuments(page !== undefined ? (page - 1) * PAGE_SIZE : 0);
 
 		return this.documents.items[page !== undefined ? page - 1 : 0];
 	}
@@ -73,7 +74,7 @@ export default class CouchModel {
 			return [];
 		}
 
-		await this.fetchDocuments(this.activeDatabase);
+		await this.fetchDocuments();
 
 		if (this.documents.pages === 0) {
 			return this.documents.items[0];
@@ -97,13 +98,15 @@ export default class CouchModel {
 		return pages;
 	}
 
-	public async fetchDocuments(database: string, offset?: number): Promise<void> {
-		this.activeDatabase = database;
+	public async fetchDocuments(offset?: number): Promise<void> {
+		if (!this.activeDatabase) {
+			return;
+		}
 
 		const couch = await this.connection.instance();
 
 		const response = await couch.request({
-			db: database,
+			db: this.activeDatabase,
 			path: '_all_docs',
 			method: 'post',
 			body: {
@@ -112,13 +115,14 @@ export default class CouchModel {
 			},
 		});
 
-		const items = response.rows.map((document: CouchResponse) => {
-			return new Document(
-				document,
-				database,
-				vscode.TreeItemCollapsibleState.None
-			);
-		});
+		const items = response.rows.map(
+			(document: CouchResponse) =>
+				new Document(
+					document,
+					this.activeDatabase!,
+					vscode.TreeItemCollapsibleState.None
+				)
+		);
 
 		if (items.length > 0) {
 			this.documents = {
@@ -177,5 +181,18 @@ export default class CouchModel {
 		const couch = await this.connection.instance();
 
 		await couch.db.destroy(name);
+
+		this.clearDocuments();
+	}
+
+	private clearDocuments(): void {
+		this.documents = {
+			items: {
+				0: [],
+			},
+			pages: 0,
+			offset: 0,
+			total: 0,
+		};
 	}
 }
