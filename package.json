@@ -153,6 +153,7 @@
 		]
 	},
 	"dependencies": {
+		"clipboardy": "^3.0.0",
 		"filenamify": "^6.0.0",
 		"nano": "10.1.2"
 	},
