@@ -166,4 +166,10 @@ export default class CouchModel {
 			total: items.length,
 		};
 	}
+
+	public async createDatabase(name: string): Promise<void> {
+		const couch = await this.connection.instance();
+
+		await couch.db.create(name);
+	}
 }

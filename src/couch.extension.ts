@@ -53,7 +53,8 @@ export default class CouchExtension {
 			this.context,
 			this.couch,
 			couchDataProvider,
-			couchDocumentProvider
+			couchDocumentProvider,
+			databaseView
 		).forEach((command) => {
 			this.context.subscriptions.push(
 				vscode.commands.registerCommand(extensionId(command.id), (...args: any[]) =>
@@ -65,6 +66,7 @@ export default class CouchExtension {
 		// TODO: move somewhere else
 		try {
 			await this.couch.fetchDatabases();
+			couchDataProvider.refresh();
 		} catch (error: any) {
 			vscode.window.showErrorMessage(error.message);
 		}

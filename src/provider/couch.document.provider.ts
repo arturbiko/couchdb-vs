@@ -45,7 +45,7 @@ export class CouchDocumentProvider
 	}
 
 	public refresh(): void {
-		if (this.view) {
+		if (this.view && this.model.documentCount > 0) {
 			this.view.title = `Documents (${this.model.documentCount})`;
 		}
 

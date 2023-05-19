@@ -42,6 +42,8 @@ export class Database extends CouchItem {
 	) {
 		super(label, collapsibleState);
 
+		this.id = label;
+
 		this.command = {
 			command: extensionId('selectDatabase'),
 			arguments: [label],

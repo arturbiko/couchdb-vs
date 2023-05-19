@@ -86,23 +86,38 @@ export default function commands(
 				try {
 					let valid = undefined;
 
-					let value: string | undefined = '';
+					let name: string | undefined = '';
 
 					while (!valid?.valid) {
-						value = await vscode.window.showInputBox({
+						name = await vscode.window.showInputBox({
 							placeHolder: 'Database name',
 							prompt: 'Enter a unique database name',
 						});
 
-						valid = validateDatabaseName(value);
+						// user bailed with esc
+						if (name === undefined) {
+							return;
+						}
+
+						valid = validateDatabaseName(name);
 
 						if (!valid.valid) {
 							vscode.window.showErrorMessage(valid.message || '');
 						}
 					}
 
-					vscode.window.showInformationMessage(`Successfully created ${value}.`);
-				} catch (error: any) {}
+					await couchData.createDatabase(name);
+
+					await couchData.fetchDatabases();
+
+					await databaseProvider.refresh();
+
+					await databaseProvider.selectChild(name);
+
+					vscode.window.showInformationMessage(`Successfully created ${name}.`);
+				} catch (error: any) {
+					vscode.window.showErrorMessage(error.message);
+				}
 			},
 		},
 	];
