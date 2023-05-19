@@ -10,6 +10,7 @@ import {
 	validateDatabaseName,
 	validateDatabaseRemoveCondition,
 } from './service/validator.service';
+import clipboard from 'clipboardy';
 
 export interface Command {
 	id: string;
@@ -158,6 +159,18 @@ export default function commands(
 				} catch (error: any) {
 					vscode.window.showErrorMessage(error.message);
 				}
+			},
+		},
+		{
+			id: 'copyItemName',
+			fn: async (item: CouchItem) => {
+				if (!item.label) {
+					return;
+				}
+
+				clipboard.writeSync(item.label.toString());
+
+				vscode.window.showInformationMessage(`Copied to clipboard 📋`);
 			},
 		},
 	];
