@@ -185,6 +185,14 @@ export default class CouchModel {
 		this.clearDocuments();
 	}
 
+	public async removeDocument(document: Document): Promise<void> {
+		const couch = await this.connection.instance();
+
+		const db = couch.use(document.source);
+
+		await db.destroy(document._id, document._rev);
+	}
+
 	private clearDocuments(): void {
 		this.documents = {
 			items: {

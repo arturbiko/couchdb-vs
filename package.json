@@ -104,6 +104,11 @@
 				{
 					"command": "couchdb-vs.copyItemName",
 					"group": "inline"
+				},
+				{
+					"command": "couchdb-vs.removeDocument",
+					"when": "view == couchdb-vs.couchDocumentList",
+					"group": "inline"
 				}
 			]
 		},
@@ -139,6 +144,11 @@
 			{
 				"command": "couchdb-vs.openDocument",
 				"title": "Open Document"
+			},
+			{
+				"command": "couchdb-vs.removeDocument",
+				"title": "Remove Document",
+				"icon": "$(trash)"
 			}
 		],
 		"viewsWelcome": [
