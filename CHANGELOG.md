@@ -14,6 +14,8 @@ Please refer to the sections below for an overview of the changes made in each r
 
 - Refresh database and document count event if it is empty
 
+- Make page label not copyable
+
 ---
 
 ## [0.1.0] - 2023-05-19

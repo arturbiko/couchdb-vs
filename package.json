@@ -103,11 +103,12 @@
 				},
 				{
 					"command": "couchdb-vs.copyItemName",
-					"group": "inline"
+					"group": "inline",
+					"when": "viewItem != page"
 				},
 				{
 					"command": "couchdb-vs.removeDocument",
-					"when": "view == couchdb-vs.couchDocumentList",
+					"when": "view == couchdb-vs.couchDocumentList && viewItem == document",
 					"group": "inline"
 				}
 			]
