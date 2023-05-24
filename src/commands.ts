@@ -187,8 +187,8 @@ export default function commands(
 					vscode.window.showErrorMessage(error.message);
 				}
 
+				await couchData.fetchDocuments();
 				await documentProvider.refresh();
-				await databaseProvider.refresh();
 			},
 		},
 	];

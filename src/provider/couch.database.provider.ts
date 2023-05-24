@@ -48,8 +48,11 @@ export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {
 	}
 
 	public refresh(): void {
-		if (this.view && this.model.databaseCount > 0) {
-			this.view.title = `Databases (${this.model.databaseCount})`;
+		if (this.view) {
+			this.view.title =
+				this.model.databaseCount > 0
+					? `Databases (${this.model.databaseCount})`
+					: 'Databases';
 		}
 
 		this._onDidChangeTreeData.fire(undefined);
