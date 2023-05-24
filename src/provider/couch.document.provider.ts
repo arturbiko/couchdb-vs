@@ -45,8 +45,11 @@ export class CouchDocumentProvider
 	}
 
 	public refresh(): void {
-		if (this.view && this.model.documentCount > 0) {
-			this.view.title = `Documents (${this.model.documentCount})`;
+		if (this.view) {
+			this.view.title =
+				this.model.documentCount > 0
+					? `Documents (${this.model.documentCount})`
+					: 'Documents';
 		}
 
 		this._onDidChangeTreeData.fire(undefined);

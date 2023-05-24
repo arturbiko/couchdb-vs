@@ -128,9 +128,9 @@ export default class CouchModel {
 			this.documents = {
 				items: {
 					...this.documents.items,
-					[response.offset > 0 ? Math.round(response.offset / PAGE_SIZE) : 0]: items,
+					[response.offset > 0 ? Math.ceil(response.offset / PAGE_SIZE) : 0]: items,
 				},
-				pages: Math.round(response.total_rows / PAGE_SIZE),
+				pages: Math.ceil(response.total_rows / PAGE_SIZE),
 				offset: response.offset,
 				total: response.total_rows,
 			};
@@ -183,6 +183,14 @@ export default class CouchModel {
 		await couch.db.destroy(name);
 
 		this.clearDocuments();
+	}
+
+	public async removeDocument(document: Document): Promise<void> {
+		const couch = await this.connection.instance();
+
+		const db = couch.use(document.source);
+
+		await db.destroy(document._id, document._rev);
 	}
 
 	private clearDocuments(): void {

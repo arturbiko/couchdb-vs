@@ -174,5 +174,22 @@ export default function commands(
 				vscode.window.showInformationMessage(`Copied to clipboard 📋`);
 			},
 		},
+		{
+			id: 'removeDocument',
+			fn: async (item: CouchItem) => {
+				try {
+					await couchData.removeDocument(item as Document);
+
+					vscode.window.showInformationMessage(
+						`Successfully removed ${item.label}.`
+					);
+				} catch (error: any) {
+					vscode.window.showErrorMessage(error.message);
+				}
+
+				await couchData.fetchDocuments();
+				await documentProvider.refresh();
+			},
+		},
 	];
 }

@@ -19,6 +19,8 @@ export class Page extends CouchItem {
 		this.pageNumber = pageNumber;
 
 		this.id = `${source}_${pageNumber}`;
+
+		this.contextValue = 'page';
 	}
 
 	public get type(): ViewType {
@@ -88,6 +90,8 @@ export class Document extends CouchItem {
 		};
 
 		this.description = `_rev: ${this._rev}`;
+
+		this.contextValue = 'document';
 	}
 
 	public get type(): ViewType {
