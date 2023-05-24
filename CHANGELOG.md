@@ -2,7 +2,7 @@
 
 Please refer to the sections below for an overview of the changes made in each release. We appreciate your support and encourage you to provide feedback and suggestions as we strive to make our project even better.
 
-## [0.2.0] - Unreleased
+## [0.2.0] - 2023-05-25
 
 ### Added
 
@@ -12,7 +12,7 @@ Please refer to the sections below for an overview of the changes made in each r
 
 - Pages get sometimes hidden due to lower document size changing
 
-- Refresh database and document count event if it is empty
+- Refresh database and document count even if it is empty
 
 - Make page label not copyable
 
