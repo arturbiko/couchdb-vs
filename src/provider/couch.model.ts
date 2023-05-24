@@ -128,9 +128,9 @@ export default class CouchModel {
 			this.documents = {
 				items: {
 					...this.documents.items,
-					[response.offset > 0 ? Math.round(response.offset / PAGE_SIZE) : 0]: items,
+					[response.offset > 0 ? Math.ceil(response.offset / PAGE_SIZE) : 0]: items,
 				},
-				pages: Math.round(response.total_rows / PAGE_SIZE),
+				pages: Math.ceil(response.total_rows / PAGE_SIZE),
 				offset: response.offset,
 				total: response.total_rows,
 			};
