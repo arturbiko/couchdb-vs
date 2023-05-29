@@ -34,7 +34,7 @@ export default class ConnectionService {
 			}
 
 			this.writeSettings();
-			await this.connect();
+			await this.instance();
 		});
 	}
 

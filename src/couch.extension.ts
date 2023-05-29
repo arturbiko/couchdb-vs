@@ -20,7 +20,7 @@ export default class CouchExtension {
 
 	public async activate(): Promise<void> {
 		// data layer
-		const databaseProvider = DatabaseRepository.instance(this.connection);
+		const databaseProvider = new DatabaseRepository(this.connection);
 		const databaseStore = new DatabaseStore(databaseProvider);
 
 		// view layer

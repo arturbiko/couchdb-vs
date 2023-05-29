@@ -1,7 +1,7 @@
-import DataStore from 'src/api/data.interface';
-import DatabaseRepository from 'src/api/database.repository';
-import { Database } from 'src/provider/couch.collection';
 import { TreeItemCollapsibleState } from 'vscode';
+import DataStore from '../api/data.interface';
+import DatabaseRepository from '../api/database.repository';
+import { Database } from '../provider/couch.collection';
 
 export default class DatabaseStore extends DataStore<Database> {
 	constructor(private readonly databaseRepository: DatabaseRepository) {

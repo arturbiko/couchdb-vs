@@ -1,20 +1,12 @@
-import { Database } from 'src/provider/couch.collection';
-import ConnectionService from 'src/service/connection.service';
+import { Database } from '../provider/couch.collection';
+import ConnectionService from '../service/connection.service';
 
 export default class DatabaseRepository {
 	private static provider: DatabaseRepository | undefined;
 
 	private active: Database | undefined;
 
-	private constructor(private readonly connection: ConnectionService) {}
-
-	public static instance(connection: ConnectionService): DatabaseRepository {
-		if (!this.provider) {
-			this.provider = new DatabaseRepository(connection);
-		}
-
-		return this.provider;
-	}
+	public constructor(private readonly connection: ConnectionService) {}
 
 	public setActiveDatabase(database: Database) {
 		this.active = database;

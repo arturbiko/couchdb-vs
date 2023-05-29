@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import DatabaseStore from 'src/core/database.store';
-import { CouchDataProvider } from 'src/provider/couch.database.provider';
-import CouchItem from 'src/provider/couch.item';
+import DatabaseStore from '../core/database.store';
+import { CouchDataProvider } from '../provider/couch.database.provider';
+import CouchItem from '../provider/couch.item';
 
 export default class DatabaseController {
 	constructor(

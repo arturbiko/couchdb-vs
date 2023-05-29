@@ -1,4 +1,4 @@
-import CouchItem from 'src/provider/couch.item';
+import CouchItem from '../provider/couch.item';
 
 export default abstract class DataStore<T extends CouchItem> {
 	protected data: T[] = [];

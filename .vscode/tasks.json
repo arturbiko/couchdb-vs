@@ -27,12 +27,22 @@
 			"group": "build"
 		},
 		{
-			"label": "tasks: watch-tests",
+			"type": "npm",
+			"script": "compile-tests",
+			"problemMatcher": "$tsc-watch",
+			"isBackground": true,
+			"presentation": {
+				"reveal": "never",
+				"group": "watchers"
+			},
+			"group": "build"
+		},
+		{
+			"label": "tasks: compile-tests",
 			"dependsOn": [
-				"npm: watch",
-				"npm: watch-tests"
+				"npm: compile-tests"
 			],
-			"problemMatcher": []
+			"problemMatcher": ["$tsc-watch"]
 		}
 	]
 }
