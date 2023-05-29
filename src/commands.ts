@@ -10,6 +10,7 @@ import {
 	validateDatabaseName,
 	validateDatabaseRemoveCondition,
 } from './service/validator.service';
+import DatabaseController from './controller/database.controller';
 
 export interface Command {
 	id: string;
@@ -20,22 +21,15 @@ export default function commands(
 	context: vscode.ExtensionContext,
 	couchData: CouchModel,
 	databaseProvider: CouchDataProvider,
-	documentProvider: CouchDocumentProvider
+	documentProvider: CouchDocumentProvider,
+	databaseController: DatabaseController
 ): Command[] {
 	const editorService = new EditorService(context);
 
 	return [
 		{
 			id: 'refreshDatabases',
-			fn: async () => {
-				try {
-					await couchData.fetchDatabases();
-
-					databaseProvider.refresh();
-				} catch (error: any) {
-					vscode.window.showErrorMessage(error.message);
-				}
-			},
+			fn: () => databaseController.refreshDatabases(),
 		},
 		{
 			id: 'selectDatabase',
@@ -115,8 +109,6 @@ export default function commands(
 					await couchData.fetchDatabases();
 
 					await databaseProvider.refresh();
-
-					await databaseProvider.selectChild(name);
 
 					vscode.window.showInformationMessage(`Successfully created ${name}.`);
 				} catch (error: any) {

@@ -5,16 +5,26 @@ import CouchModel from './provider/couch.model';
 import { CouchDocumentProvider } from './provider/couch.document.provider';
 import commands from './commands';
 import ConnectionService from './service/connection.service';
+import DatabaseController from './controller/database.controller';
+import DatabaseStore from './core/database.store';
+import DatabaseRepository from './api/database.repository';
 export default class CouchExtension {
+	private connection: ConnectionService;
+
 	private couch: CouchModel;
 
 	constructor(private readonly context: vscode.ExtensionContext) {
-		const connection = new ConnectionService();
-		this.couch = new CouchModel(connection);
+		this.connection = new ConnectionService();
+		this.couch = new CouchModel(this.connection);
 	}
 
 	public async activate(): Promise<void> {
-		const couchDataProvider = new CouchDataProvider(this.couch);
+		// data layer
+		const databaseProvider = DatabaseRepository.instance(this.connection);
+		const databaseStore = new DatabaseStore(databaseProvider);
+
+		// view layer
+		const couchDataProvider = new CouchDataProvider(databaseStore);
 		const databaseView = vscode.window.createTreeView(
 			extensionId('couchDataView'),
 			{
@@ -22,13 +32,17 @@ export default class CouchExtension {
 			}
 		);
 
-		couchDataProvider.registerView(databaseView);
-
 		this.context.subscriptions.push(
 			vscode.window.registerTreeDataProvider(
 				extensionId('couchDataView'),
 				couchDataProvider
 			)
+		);
+
+		const databaseController = new DatabaseController(
+			databaseStore,
+			couchDataProvider,
+			databaseView
 		);
 
 		const couchDocumentProvider = new CouchDocumentProvider(this.couch);
@@ -52,14 +66,15 @@ export default class CouchExtension {
 			this.context,
 			this.couch,
 			couchDataProvider,
-			couchDocumentProvider
-		).forEach((command) => {
+			couchDocumentProvider,
+			databaseController
+		).forEach((command) =>
 			this.context.subscriptions.push(
 				vscode.commands.registerCommand(extensionId(command.id), (...args: any[]) =>
 					command.fn(...args)
 				)
-			);
-		});
+			)
+		);
 
 		// TODO: move somewhere else
 		try {
