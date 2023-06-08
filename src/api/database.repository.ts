@@ -2,8 +2,6 @@ import { Database } from '../provider/couch.collection';
 import ConnectionService from '../service/connection.service';
 
 export default class DatabaseRepository {
-	private static provider: DatabaseRepository | undefined;
-
 	private active: Database | undefined;
 
 	public constructor(private readonly connection: ConnectionService) {}

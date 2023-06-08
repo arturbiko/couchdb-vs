@@ -11,6 +11,7 @@ import {
 	validateDatabaseRemoveCondition,
 } from './service/validator.service';
 import DatabaseController from './controller/database.controller';
+import DocumentController from './controller/document.controller';
 
 export interface Command {
 	id: string;
@@ -22,7 +23,8 @@ export default function commands(
 	couchData: CouchModel,
 	databaseProvider: CouchDataProvider,
 	documentProvider: CouchDocumentProvider,
-	databaseController: DatabaseController
+	databaseController: DatabaseController,
+	documentController: DocumentController
 ): Command[] {
 	const editorService = new EditorService(context);
 
@@ -34,16 +36,8 @@ export default function commands(
 		{
 			id: 'selectDatabase',
 			fn: async (name: string) => {
-				try {
-					couchData.setActiveDatabase(name);
-					await couchData.fetchDocuments();
-				} catch (error: any) {
-					await couchData.fetchDatabases();
-
-					databaseProvider.refresh();
-				}
-
-				documentProvider.refresh();
+				await databaseController.selectDatabse(name);
+				await documentController.refreshDocuments();
 			},
 		},
 		{

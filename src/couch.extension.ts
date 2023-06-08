@@ -8,6 +8,9 @@ import ConnectionService from './service/connection.service';
 import DatabaseController from './controller/database.controller';
 import DatabaseStore from './core/database.store';
 import DatabaseRepository from './api/database.repository';
+import DocumentController from './controller/document.controller';
+import DocumentStore from './core/document.store';
+import DocumentRepository from './api/document.repository';
 export default class CouchExtension {
 	private connection: ConnectionService;
 
@@ -19,11 +22,11 @@ export default class CouchExtension {
 	}
 
 	public async activate(): Promise<void> {
-		// data layer
+		// data layer (databases)
 		const databaseProvider = new DatabaseRepository(this.connection);
 		const databaseStore = new DatabaseStore(databaseProvider);
 
-		// view layer
+		// view layer (databases)
 		const couchDataProvider = new CouchDataProvider(databaseStore);
 		const databaseView = vscode.window.createTreeView(
 			extensionId('couchDataView'),
@@ -45,6 +48,11 @@ export default class CouchExtension {
 			databaseView
 		);
 
+		// data layer (documents)
+		const documentProvider = new DocumentRepository(this.connection);
+		const documentStore = new DocumentStore(documentProvider);
+
+		// view layer (documents)
 		const couchDocumentProvider = new CouchDocumentProvider(this.couch);
 		const documentView = vscode.window.createTreeView(
 			extensionId('couchDocumentList'),
@@ -53,8 +61,6 @@ export default class CouchExtension {
 			}
 		);
 
-		couchDocumentProvider.registerView(documentView);
-
 		this.context.subscriptions.push(
 			vscode.window.registerTreeDataProvider(
 				extensionId('couchDocumentList'),
@@ -62,12 +68,19 @@ export default class CouchExtension {
 			)
 		);
 
+		const documentController = new DocumentController(
+			documentStore,
+			couchDocumentProvider,
+			documentView
+		);
+
 		commands(
 			this.context,
 			this.couch,
 			couchDataProvider,
 			couchDocumentProvider,
-			databaseController
+			databaseController,
+			documentController
 		).forEach((command) =>
 			this.context.subscriptions.push(
 				vscode.commands.registerCommand(extensionId(command.id), (...args: any[]) =>
