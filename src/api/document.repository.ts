@@ -9,7 +9,7 @@ export default class DocumentRepository {
 
 	public constructor(private readonly connection: ConnectionService) {}
 
-	public setActiveDatabase(database: Database): void {
+	public setActiveDatabase(database?: Database): void {
 		this.database = database;
 	}
 

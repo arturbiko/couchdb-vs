@@ -3,7 +3,7 @@ import CouchModel from './provider/couch.model';
 import { CouchDataProvider } from './provider/couch.database.provider';
 import { CouchDocumentProvider } from './provider/couch.document.provider';
 import { extensionId } from './extension';
-import { Document } from './provider/couch.collection';
+import { Database, Document } from './provider/couch.collection';
 import EditorService from './service/editor.service';
 import CouchItem from './provider/couch.item';
 import {
@@ -51,6 +51,13 @@ export default function commands(
 			id: 'removeDocument',
 			fn: async (item: CouchItem) => {
 				await documentController.removeDocument(item as Document);
+			},
+		},
+		{
+			id: 'removeDatabase',
+			fn: async (item: CouchItem) => {
+				await databaseController.removeDatabase(item as Database);
+				documentController.clearData();
 			},
 		},
 		{
@@ -118,42 +125,6 @@ export default function commands(
 					await databaseProvider.refresh();
 
 					vscode.window.showInformationMessage(`Successfully created ${name}.`);
-				} catch (error: any) {
-					vscode.window.showErrorMessage(error.message);
-				}
-			},
-		},
-		{
-			id: 'removeDatabase',
-			fn: async (database: CouchItem) => {
-				try {
-					let valid = undefined;
-
-					const name: string | undefined = await vscode.window.showInputBox({
-						placeHolder: database.label?.toString(),
-						prompt: `Enter database name ${database.label?.toString()} to remove it. THIS ACTION IS NOT REVERSIBLE!`,
-					});
-
-					valid = validateDatabaseRemoveCondition(database.id, name);
-
-					if (!valid.valid) {
-						vscode.window.showErrorMessage(valid.message || '');
-
-						return;
-					}
-
-					if (!name) {
-						return;
-					}
-
-					await couchData.removeDatabase(name);
-					couchData.setActiveDatabase(undefined);
-					await couchData.fetchDatabases();
-
-					await documentProvider.refresh();
-					await databaseProvider.refresh();
-
-					vscode.window.showInformationMessage(`Successfully removed ${name}.`);
 				} catch (error: any) {
 					vscode.window.showErrorMessage(error.message);
 				}

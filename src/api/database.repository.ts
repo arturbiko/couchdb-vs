@@ -1,3 +1,4 @@
+import { Database } from '../provider/couch.collection';
 import ConnectionService from '../service/connection.service';
 
 export default class DatabaseRepository {
@@ -7,5 +8,11 @@ export default class DatabaseRepository {
 		const couch = await this.connection.instance();
 
 		return await couch.db.list();
+	}
+
+	public async remove(database: Database): Promise<void> {
+		const couch = await this.connection.instance();
+
+		await couch.db.destroy(database.label);
 	}
 }

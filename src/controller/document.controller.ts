@@ -47,5 +47,7 @@ export default class DocumentController {
 
 	public clearData(): void {
 		this.documentStore.clear();
+
+		this.documentProvider.refresh(this.documentView);
 	}
 }

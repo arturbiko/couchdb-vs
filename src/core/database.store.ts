@@ -12,6 +12,12 @@ export default class DatabaseStore extends DataStore<Database> {
 		return this.data;
 	}
 
+	public async remove(database: Database): Promise<void> {
+		await this.databaseRepository.remove(database);
+
+		this.data = this.data.filter((d) => (d as Database).label !== database.label);
+	}
+
 	public async update(): Promise<void> {
 		const list = await this.databaseRepository.fetchDatabases();
 
