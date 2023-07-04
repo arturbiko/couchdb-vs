@@ -53,6 +53,8 @@ export class Database extends CouchItem {
 		};
 
 		this.iconPath = iconPath('db-row.png');
+
+		this.contextValue = 'database';
 	}
 
 	public get type(): ViewType {
@@ -111,9 +113,29 @@ export class Document extends CouchItem {
 	}
 }
 
+export class Load extends CouchItem {
+	constructor(public readonly label: string) {
+		super(label, vscode.TreeItemCollapsibleState.None);
+
+		this.command = {
+			command: extensionId('loadDocuments'),
+			arguments: [],
+			title: 'load',
+		};
+
+		this.contextValue = 'action';
+	}
+
+	public get type(): ViewType {
+		return ViewType.ACTION;
+	}
+}
+
 export class Empty extends CouchItem {
 	constructor(public readonly label: string) {
 		super(label, vscode.TreeItemCollapsibleState.None);
+
+		this.contextValue = 'empty';
 	}
 
 	public get type(): ViewType {

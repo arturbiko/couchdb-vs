@@ -98,18 +98,18 @@
 			"view/item/context": [
 				{
 					"command": "couchdb-vs.removeDatabase",
-					"when": "view == couchdb-vs.couchDataView",
+					"when": "viewItem == 'database'",
 					"group": "inline"
 				},
 				{
 					"command": "couchdb-vs.copyItemName",
 					"group": "inline",
-					"when": "viewItem != page"
+					"when": "viewItem != 'action' && viewItem != 'empty'"
 				},
 				{
 					"command": "couchdb-vs.removeDocument",
-					"when": "view == couchdb-vs.couchDocumentList && viewItem == document",
-					"group": "inline"
+					"group": "inline",
+					"when": "viewItem == 'document'"
 				}
 			]
 		},
@@ -136,7 +136,11 @@
 			},
 			{
 				"command": "couchdb-vs.selectDatabase",
-				"title": "Select"
+				"title": "Select Database"
+			},
+			{
+				"command": "couchdb-vs.loadDocuments",
+				"title": "Load Documents"
 			},
 			{
 				"command": "couchdb-vs.openSettings",

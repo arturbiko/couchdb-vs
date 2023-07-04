@@ -2,10 +2,12 @@ import * as vscode from 'vscode';
 import DatabaseStore from '../core/database.store';
 import { CouchDataProvider } from '../provider/couch.database.provider';
 import CouchItem from '../provider/couch.item';
+import DocumentRepository from '../api/document.repository';
 
 export default class DatabaseController {
 	constructor(
 		private readonly databaseStore: DatabaseStore,
+		private readonly documentRepository: DocumentRepository,
 		private readonly databaseProvider: CouchDataProvider,
 		private readonly databaseView: vscode.TreeView<CouchItem>
 	) {}
@@ -30,7 +32,7 @@ export default class DatabaseController {
 				throw new Error('Database not available.');
 			}
 
-			this.databaseStore.setDatabase(element);
+			this.documentRepository.setActiveDatabase(element);
 
 			this.databaseProvider.refresh(this.databaseView);
 		} catch (error: any) {

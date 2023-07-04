@@ -3,14 +3,6 @@ import CouchItem from '../provider/couch.item';
 export default abstract class DataStore<T extends CouchItem> {
 	protected data: T[] = [];
 
-	public list(): T[] {
-		return this.data;
-	}
-
-	public paged(): T[] {
-		return this.data;
-	}
-
 	public findByName(name: string): T | undefined {
 		return this.data.find((element) => element.label === name);
 	}
@@ -18,6 +10,8 @@ export default abstract class DataStore<T extends CouchItem> {
 	public size(): number {
 		return this.data.length;
 	}
+
+	abstract list(): T[];
 
 	abstract update(): Promise<void>;
 }

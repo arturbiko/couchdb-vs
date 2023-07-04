@@ -11,6 +11,7 @@ import DatabaseRepository from './api/database.repository';
 import DocumentController from './controller/document.controller';
 import DocumentStore from './core/document.store';
 import DocumentRepository from './api/document.repository';
+import { ViewType } from './provider/couch.item';
 export default class CouchExtension {
 	private connection: ConnectionService;
 
@@ -25,6 +26,10 @@ export default class CouchExtension {
 		// data layer (databases)
 		const databaseProvider = new DatabaseRepository(this.connection);
 		const databaseStore = new DatabaseStore(databaseProvider);
+
+		// data layer (documents)
+		const documentProvider = new DocumentRepository(this.connection);
+		const documentStore = new DocumentStore(documentProvider);
 
 		// view layer (databases)
 		const couchDataProvider = new CouchDataProvider(databaseStore);
@@ -44,16 +49,13 @@ export default class CouchExtension {
 
 		const databaseController = new DatabaseController(
 			databaseStore,
+			documentProvider,
 			couchDataProvider,
 			databaseView
 		);
 
-		// data layer (documents)
-		const documentProvider = new DocumentRepository(this.connection);
-		const documentStore = new DocumentStore(documentProvider);
-
 		// view layer (documents)
-		const couchDocumentProvider = new CouchDocumentProvider(this.couch);
+		const couchDocumentProvider = new CouchDocumentProvider(documentStore);
 		const documentView = vscode.window.createTreeView(
 			extensionId('couchDocumentList'),
 			{

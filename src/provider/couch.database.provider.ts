@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import CouchItem from './couch.item';
-import DatabaseStore from 'src/core/database.store';
+import DatabaseStore from '../core/database.store';
 
 export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<CouchItem | undefined> =

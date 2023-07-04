@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
+import { DocumentGetResponse } from 'nano';
 import ConnectionService from '../service/connection.service';
 import { Database, Document, Empty, Page } from './couch.collection';
 import CouchItem from './couch.item';
-import { DocumentGetResponse } from 'nano';
 import { CouchResponse } from '../api/couch.interface';
 
 export const PAGE_SIZE = 10;

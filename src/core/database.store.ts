@@ -8,8 +8,8 @@ export default class DatabaseStore extends DataStore<Database> {
 		super();
 	}
 
-	public setDatabase(database: Database): void {
-		this.databaseRepository.setActiveDatabase(database);
+	public list(): Database[] {
+		return this.data;
 	}
 
 	public async update(): Promise<void> {

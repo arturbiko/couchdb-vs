@@ -37,7 +37,20 @@ export default function commands(
 			id: 'selectDatabase',
 			fn: async (name: string) => {
 				await databaseController.selectDatabse(name);
+				documentController.clearData();
 				await documentController.refreshDocuments();
+			},
+		},
+		{
+			id: 'loadDocuments',
+			fn: async (name: string) => {
+				await documentController.loadDocuments();
+			},
+		},
+		{
+			id: 'removeDocument',
+			fn: async (item: CouchItem) => {
+				await documentController.removeDocument(item as Document);
 			},
 		},
 		{
@@ -158,23 +171,6 @@ export default function commands(
 				clipboardy.default.writeSync(item.label.toString());
 
 				vscode.window.showInformationMessage(`Copied to clipboard 📋`);
-			},
-		},
-		{
-			id: 'removeDocument',
-			fn: async (item: CouchItem) => {
-				try {
-					await couchData.removeDocument(item as Document);
-
-					vscode.window.showInformationMessage(
-						`Successfully removed ${item.label}.`
-					);
-				} catch (error: any) {
-					vscode.window.showErrorMessage(error.message);
-				}
-
-				await couchData.fetchDocuments();
-				await documentProvider.refresh();
 			},
 		},
 	];
