@@ -10,8 +10,6 @@ interface ConnectionSettings {
 }
 
 export default class ConnectionService {
-	private connection: nano.ServerScope | undefined;
-
 	private settings: ConnectionSettings | undefined;
 
 	public constructor() {
@@ -20,11 +18,7 @@ export default class ConnectionService {
 	}
 
 	public async instance(): Promise<nano.ServerScope> {
-		if (!this.connection) {
-			await this.connect();
-		}
-
-		return this.connection!;
+		return await this.connect();
 	}
 
 	private async onConfigurationChange(): Promise<void> {
@@ -34,7 +28,6 @@ export default class ConnectionService {
 			}
 
 			this.writeSettings();
-			await this.instance();
 		});
 	}
 
@@ -59,7 +52,7 @@ export default class ConnectionService {
 		};
 	}
 
-	private async connect(): Promise<void> {
+	private async connect(): Promise<nano.ServerScope> {
 		if (!this.settings) {
 			throw new Error('Missing connection settings.');
 		}
@@ -76,6 +69,6 @@ export default class ConnectionService {
 			);
 		}
 
-		this.connection = connection;
+		return connection;
 	}
 }

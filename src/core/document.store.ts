@@ -16,12 +16,14 @@ export default class DocumentStore extends DataStore<CouchItem> {
 	public list(): CouchItem[] {
 		const data = this.data.slice();
 
-		if (this.total === 0) {
-			data.push(new Empty('No Documents avaialble'));
-		}
+		if (!!this.documentRepository.database) {
+			if (this.total === 0) {
+				data.push(new Empty('No Documents avaialble'));
+			}
 
-		if (data.length < this.total) {
-			data.push(new Load('Load more...'));
+			if (data.length < this.total) {
+				data.push(new Load('Load more...'));
+			}
 		}
 
 		return data;
