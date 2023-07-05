@@ -1,4 +1,3 @@
-import { TreeItemCollapsibleState } from 'vscode';
 import DataStore from '../api/data.interface';
 import DatabaseRepository from '../api/database.repository';
 import { Database } from '../provider/couch.collection';
@@ -12,6 +11,20 @@ export default class DatabaseStore extends DataStore<Database> {
 		return this.data;
 	}
 
+	public async create(name: string): Promise<Database> {
+		try {
+			await this.databaseRepository.create(name);
+		} catch (error) {
+			return Promise.reject(error);
+		}
+
+		const database = new Database(name);
+
+		this.data.push(database);
+
+		return database;
+	}
+
 	public async remove(database: Database): Promise<void> {
 		await this.databaseRepository.remove(database);
 
@@ -21,8 +34,6 @@ export default class DatabaseStore extends DataStore<Database> {
 	public async update(): Promise<void> {
 		const list = await this.databaseRepository.fetchDatabases();
 
-		this.data = list.map(
-			(name) => new Database(name, TreeItemCollapsibleState.None)
-		);
+		this.data = list.map((name) => new Database(name));
 	}
 }

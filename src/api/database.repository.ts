@@ -10,6 +10,12 @@ export default class DatabaseRepository {
 		return await couch.db.list();
 	}
 
+	public async create(name: string): Promise<void> {
+		const couch = await this.connection.instance();
+
+		await couch.db.create(name);
+	}
+
 	public async remove(database: Database): Promise<void> {
 		const couch = await this.connection.instance();
 

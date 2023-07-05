@@ -61,6 +61,12 @@ export default function commands(
 			},
 		},
 		{
+			id: 'addDatabase',
+			fn: async () => {
+				await databaseController.createDatabase();
+			},
+		},
+		{
 			id: 'openSettings',
 			fn: async () => {
 				vscode.commands.executeCommand(
@@ -90,44 +96,6 @@ export default function commands(
 				}
 
 				documentProvider.refresh();
-			},
-		},
-		{
-			id: 'addDatabase',
-			fn: async () => {
-				try {
-					let valid = undefined;
-
-					let name: string | undefined = '';
-
-					while (!valid?.valid) {
-						name = await vscode.window.showInputBox({
-							placeHolder: 'Database name',
-							prompt: 'Enter a unique database name',
-						});
-
-						// user bailed with esc
-						if (name === undefined) {
-							return;
-						}
-
-						valid = validateDatabaseName(name);
-
-						if (!valid.valid) {
-							vscode.window.showErrorMessage(valid.message || '');
-						}
-					}
-
-					await couchData.createDatabase(name);
-
-					await couchData.fetchDatabases();
-
-					await databaseProvider.refresh();
-
-					vscode.window.showInformationMessage(`Successfully created ${name}.`);
-				} catch (error: any) {
-					vscode.window.showErrorMessage(error.message);
-				}
 			},
 		},
 		{

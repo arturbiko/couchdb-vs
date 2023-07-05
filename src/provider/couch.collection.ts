@@ -39,10 +39,9 @@ export class Page extends CouchItem {
 export class Database extends CouchItem {
 	constructor(
 		public readonly label: string,
-		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
 		public readonly command?: vscode.Command
 	) {
-		super(label, collapsibleState);
+		super(label, vscode.TreeItemCollapsibleState.None);
 
 		this.id = label;
 

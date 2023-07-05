@@ -158,7 +158,7 @@ export default class CouchModel {
 		const couch = await this.connection.instance();
 
 		const items = (await couch.db.list()).map((name) => {
-			return new Database(name, vscode.TreeItemCollapsibleState.None);
+			return new Database(name);
 		});
 
 		this.databases = {

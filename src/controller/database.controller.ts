@@ -4,7 +4,10 @@ import { CouchDataProvider } from '../provider/couch.database.provider';
 import CouchItem from '../provider/couch.item';
 import DocumentRepository from '../api/document.repository';
 import { Database } from '../provider/couch.collection';
-import { validateDatabaseRemoveCondition } from '../service/validator.service';
+import {
+	validateDatabaseName,
+	validateDatabaseRemoveCondition,
+} from '../service/validator.service';
 
 export default class DatabaseController {
 	constructor(
@@ -13,6 +16,40 @@ export default class DatabaseController {
 		private readonly databaseProvider: CouchDataProvider,
 		private readonly databaseView: vscode.TreeView<CouchItem>
 	) {}
+
+	public async createDatabase(): Promise<void> {
+		try {
+			let valid = undefined;
+
+			let name: string | undefined = '';
+
+			while (!valid?.valid) {
+				name = await vscode.window.showInputBox({
+					placeHolder: 'Database name',
+					prompt: 'Enter a unique database name',
+				});
+
+				// user bailed with esc
+				if (name === undefined) {
+					return;
+				}
+
+				valid = validateDatabaseName(name);
+
+				if (!valid.valid) {
+					vscode.window.showErrorMessage(valid.message || '');
+				}
+			}
+
+			await this.databaseStore.create(name);
+
+			await this.databaseProvider.refresh(this.databaseView);
+
+			vscode.window.showInformationMessage(`Successfully created ${name}.`);
+		} catch (error: any) {
+			vscode.window.showErrorMessage(error.message);
+		}
+	}
 
 	public async refreshDatabases(): Promise<void> {
 		try {
@@ -67,8 +104,6 @@ export default class DatabaseController {
 
 			this.documentRepository.setActiveDatabase(undefined);
 			this.databaseProvider.refresh(this.databaseView);
-
-			await this.databaseProvider.refresh(this.databaseView);
 
 			vscode.window.showInformationMessage(`Successfully removed ${name}.`);
 		} catch (error: any) {
