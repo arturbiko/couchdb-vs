@@ -1,3 +1,4 @@
+import { DocumentGetResponse } from 'nano';
 import { Database, Document } from '../provider/couch.collection';
 import ConnectionService from '../service/connection.service';
 import { CouchResponse } from './couch.interface';
@@ -36,6 +37,14 @@ export default class DocumentRepository {
 			data: response.rows,
 			total: response.total_rows,
 		};
+	}
+
+	public async get(document: Document): Promise<DocumentGetResponse> {
+		const couch = await this.connection.instance();
+
+		const db = couch.use(document.source);
+
+		return db.get(document._id, {});
 	}
 
 	public async remove(document: Document): Promise<void> {

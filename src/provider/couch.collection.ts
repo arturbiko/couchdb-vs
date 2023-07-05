@@ -103,6 +103,11 @@ export class Document extends CouchItem {
 		this.content = content;
 	}
 
+	public setRev(rev: string): void {
+		this._rev = rev;
+		this.description = `_rev: ${this._rev}`;
+	}
+
 	public hasChanged(updated: object): boolean {
 		if (!(updated instanceof Document)) {
 			return false;

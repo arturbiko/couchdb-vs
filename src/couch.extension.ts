@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import { CouchDataProvider } from './provider/couch.database.provider';
 import { extensionId } from './extension';
-import CouchModel from './provider/couch.model';
 import { CouchDocumentProvider } from './provider/couch.document.provider';
 import commands from './commands';
 import ConnectionService from './service/connection.service';
@@ -11,15 +10,12 @@ import DatabaseRepository from './api/database.repository';
 import DocumentController from './controller/document.controller';
 import DocumentStore from './core/document.store';
 import DocumentRepository from './api/document.repository';
-import { ViewType } from './provider/couch.item';
+
 export default class CouchExtension {
 	private connection: ConnectionService;
 
-	private couch: CouchModel;
-
 	constructor(private readonly context: vscode.ExtensionContext) {
 		this.connection = new ConnectionService();
-		this.couch = new CouchModel(this.connection);
 	}
 
 	public async activate(): Promise<void> {
@@ -73,17 +69,11 @@ export default class CouchExtension {
 		const documentController = new DocumentController(
 			documentStore,
 			couchDocumentProvider,
-			documentView
+			documentView,
+			this.context
 		);
 
-		commands(
-			this.context,
-			this.couch,
-			couchDataProvider,
-			couchDocumentProvider,
-			databaseController,
-			documentController
-		).forEach((command) =>
+		commands(databaseController, documentController).forEach((command) =>
 			this.context.subscriptions.push(
 				vscode.commands.registerCommand(extensionId(command.id), (...args: any[]) =>
 					command.fn(...args)
@@ -93,7 +83,7 @@ export default class CouchExtension {
 
 		// TODO: move somewhere else
 		try {
-			await this.couch.fetchDatabases();
+			await databaseController.refreshDatabases();
 			couchDataProvider.refresh();
 		} catch (error: any) {
 			vscode.window.showErrorMessage(error.message);

@@ -4,6 +4,7 @@ import DataStore from '../api/data.interface';
 import DocumentRepository from '../api/document.repository';
 import { Document, Empty, Load } from '../provider/couch.collection';
 import CouchItem from '../provider/couch.item';
+import { DocumentGetResponse } from 'nano';
 
 export default class DocumentStore extends DataStore<CouchItem> {
 	private total: number = 0;
@@ -26,12 +27,28 @@ export default class DocumentStore extends DataStore<CouchItem> {
 		return data;
 	}
 
+	public async get(document: Document): Promise<DocumentGetResponse> {
+		return this.documentRepository.get(document);
+	}
+
 	public async remove(document: Document): Promise<void> {
-		await this.documentRepository.remove(document);
+		try {
+			await this.documentRepository.remove(document);
+		} catch (error) {}
 
 		this.data = this.data.filter((d) => (d as Document)._id !== document._id);
 
 		--this.total;
+	}
+
+	public async refresh(document: Document): Promise<void> {
+		const index = this.data.findIndex((d) => d.id === document.id);
+
+		if (index === -1) {
+			return;
+		}
+
+		this.data[index] = document;
 	}
 
 	public clear(): void {

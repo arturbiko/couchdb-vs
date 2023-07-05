@@ -1,15 +1,7 @@
 import * as vscode from 'vscode';
-import CouchModel from './provider/couch.model';
-import { CouchDataProvider } from './provider/couch.database.provider';
-import { CouchDocumentProvider } from './provider/couch.document.provider';
 import { extensionId } from './extension';
 import { Database, Document } from './provider/couch.collection';
-import EditorService from './service/editor.service';
 import CouchItem from './provider/couch.item';
-import {
-	validateDatabaseName,
-	validateDatabaseRemoveCondition,
-} from './service/validator.service';
 import DatabaseController from './controller/database.controller';
 import DocumentController from './controller/document.controller';
 
@@ -19,15 +11,9 @@ export interface Command {
 }
 
 export default function commands(
-	context: vscode.ExtensionContext,
-	couchData: CouchModel,
-	databaseProvider: CouchDataProvider,
-	documentProvider: CouchDocumentProvider,
 	databaseController: DatabaseController,
 	documentController: DocumentController
 ): Command[] {
-	const editorService = new EditorService(context);
-
 	return [
 		{
 			id: 'refreshDatabases',
@@ -43,7 +29,7 @@ export default function commands(
 		},
 		{
 			id: 'loadDocuments',
-			fn: async (name: string) => {
+			fn: async () => {
 				await documentController.loadDocuments();
 			},
 		},
@@ -78,24 +64,7 @@ export default function commands(
 		{
 			id: 'openDocument',
 			fn: async (document: Document) => {
-				try {
-					const data = await couchData.fetchDocument(document);
-
-					if (data._deleted) {
-						vscode.window.showErrorMessage('Document was removed.');
-						await couchData.fetchDocuments();
-					} else {
-						document._rev = data._rev;
-						document.setContent(JSON.stringify(data, null, '\t'));
-						editorService.openDocument(document);
-					}
-				} catch (error: any) {
-					await couchData.fetchDatabases();
-
-					databaseProvider.refresh();
-				}
-
-				documentProvider.refresh();
+				documentController.openDocument(document);
 			},
 		},
 		{
