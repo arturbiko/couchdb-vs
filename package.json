@@ -13,7 +13,7 @@
 		"name": "Artur Biko"
 	},
 	"engines": {
-		"vscode": "^1.74.0"
+		"vscode": "^1.79.2"
 	},
 	"categories": [
 		"Other",
@@ -159,7 +159,7 @@
 		"viewsWelcome": [
 			{
 				"view": "couchdb-vs.couchDataView",
-				"contents": "Please configure the connection settings and try refreshing the data. \n[Settings](command:couchdb-vs.openSettings)"
+				"contents": "Please configure the connection settings and try refreshing the data. \n[Settings](command:couchdb-vs.openSettings)\n\nOpen the settings menu manually in case the button above is not working, and search for `couchdb-vs` to set the credentials manually. 🔧"
 			},
 			{
 				"view": "couchdb-vs.couchDocumentList",
