@@ -76,7 +76,7 @@ export default class CouchExtension {
 		commands(databaseController, documentController).forEach((command) =>
 			this.context.subscriptions.push(
 				vscode.commands.registerCommand(extensionId(command.id), (...args: any[]) =>
-					command.fn(...args)
+					command.fn(...args, this.connection.isConnected)
 				)
 			)
 		);
@@ -84,7 +84,6 @@ export default class CouchExtension {
 		// TODO: move somewhere else
 		try {
 			await databaseController.refreshDatabases();
-			couchDataProvider.refresh();
 		} catch (error: any) {
 			vscode.window.showErrorMessage(error.message);
 		}

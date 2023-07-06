@@ -33,30 +33,34 @@
 			"properties": {
 				"couchdb-vs.protocol": {
 					"type": "string",
-					"description": "Used protocol. Usually either HTTPS or HTTP",
+					"description": "Used protocol",
 					"default": "https",
-					"scope": "workspace",
+					"scope": "machine",
+					"enum": [
+						"https",
+						"http"
+					],
 					"order": 1
 				},
 				"couchdb-vs.host": {
 					"type": "string",
 					"description": "The URL of the host",
 					"default": "",
-					"scope": "workspace",
+					"scope": "machine",
 					"order": 2
 				},
 				"couchdb-vs.username": {
 					"type": "string",
 					"description": "The username to use",
 					"default": "",
-					"scope": "workspace",
+					"scope": "machine",
 					"order": 3
 				},
 				"couchdb-vs.password": {
 					"type": "string",
 					"description": "The password to use",
 					"default": "",
-					"scope": "workspace",
+					"scope": "machine",
 					"order": 4
 				}
 			}
@@ -159,7 +163,7 @@
 		"viewsWelcome": [
 			{
 				"view": "couchdb-vs.couchDataView",
-				"contents": "Please configure the connection settings and try refreshing the data. \n[Settings](command:couchdb-vs.openSettings)\n\nOpen the settings menu manually in case the button above is not working, and search for `couchdb-vs` to set the credentials manually. 🔧"
+				"contents": "Please configure 🔧 the connection settings and try refreshing 🔄 the data. \n[Settings](command:couchdb-vs.openSettings)\n"
 			},
 			{
 				"view": "couchdb-vs.couchDocumentList",

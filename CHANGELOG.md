@@ -2,6 +2,18 @@
 
 Please refer to the sections below for an overview of the changes made in each release. We appreciate your support and encourage you to provide feedback and suggestions as we strive to make our project even better.
 
+## [0.2.1] - 2023-05-25
+
+### Added
+
+- Added a manual
+
+### Updated
+
+- Major restructuring of the codebase for code improvement and feature safety
+
+- Improvement for writing test cases
+
 ## [0.2.0] - 2023-05-25
 
 ### Added

@@ -17,7 +17,12 @@ export default class DatabaseController {
 		private readonly databaseView: vscode.TreeView<CouchItem>
 	) {}
 
-	public async createDatabase(): Promise<void> {
+	public async createDatabase(isConnected: boolean): Promise<void> {
+		if (!isConnected) {
+			vscode.window.showErrorMessage('Please connect to an instance 🚧');
+			return;
+		}
+
 		try {
 			let valid = undefined;
 
@@ -57,6 +62,7 @@ export default class DatabaseController {
 
 			this.databaseProvider.refresh(this.databaseView);
 		} catch (error: any) {
+			this.databaseProvider.refresh(this.databaseView, false);
 			vscode.window.showErrorMessage(error.message);
 		}
 	}

@@ -41,15 +41,15 @@ export default function commands(
 		},
 		{
 			id: 'removeDatabase',
-			fn: async (item: CouchItem) => {
+			fn: async (item: CouchItem, isConnected: boolean) => {
 				await databaseController.removeDatabase(item as Database);
 				documentController.clearData();
 			},
 		},
 		{
 			id: 'addDatabase',
-			fn: async () => {
-				await databaseController.createDatabase();
+			fn: async (isConnected: boolean) => {
+				await databaseController.createDatabase(isConnected);
 			},
 		},
 		{

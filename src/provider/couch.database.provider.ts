@@ -3,6 +3,8 @@ import CouchItem from './couch.item';
 import DatabaseStore from '../core/database.store';
 
 export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {
+	private isConnected = false;
+
 	private _onDidChangeTreeData: vscode.EventEmitter<CouchItem | undefined> =
 		new vscode.EventEmitter<CouchItem | undefined>();
 
@@ -22,13 +24,21 @@ export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {
 	}
 
 	public getChildren(element?: CouchItem): vscode.ProviderResult<CouchItem[]> {
+		if (!this.isConnected) {
+			return [];
+		}
+
 		return this.databaseStore.list();
 	}
 
-	public refresh(view?: vscode.TreeView<CouchItem>): void {
+	public refresh(view?: vscode.TreeView<CouchItem>, isConnected = true): void {
 		if (view) {
-			view.title = `Databases (${this.databaseStore.size()})`;
+			view.title = isConnected
+				? `Databases (${this.databaseStore.size()})`
+				: 'Databases';
 		}
+
+		this.isConnected = isConnected;
 
 		this._onDidChangeTreeData.fire(undefined);
 	}

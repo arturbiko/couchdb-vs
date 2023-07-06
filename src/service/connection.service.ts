@@ -10,6 +10,8 @@ interface ConnectionSettings {
 }
 
 export default class ConnectionService {
+	public isConnected = false;
+
 	private settings: ConnectionSettings | undefined;
 
 	public constructor() {
@@ -63,7 +65,11 @@ export default class ConnectionService {
 
 		try {
 			await connection.info();
+
+			this.isConnected = true;
 		} catch (error) {
+			this.isConnected = false;
+
 			throw new Error(
 				'Trouble accessing CouchDB. Check your connections settings and try again.'
 			);
