@@ -4,7 +4,7 @@ import DatabaseRepository from '../api/database.repository';
 import { Database, Empty } from '../provider/couch.collection';
 
 export default class DatabaseStore extends DataStore<Database> {
-	private total: number = 0;
+	private total = 0;
 
 	constructor(private readonly databaseRepository: DatabaseRepository) {
 		super();

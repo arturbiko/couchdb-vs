@@ -15,7 +15,7 @@ export default class DocumentRepository {
 	}
 
 	public async fetchDocuments(
-		offset: number = 0
+		offset = 0
 	): Promise<{ data: CouchResponse[]; total: number }> {
 		if (!this.database) {
 			throw new Error('Database not selected');

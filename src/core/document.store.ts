@@ -7,7 +7,7 @@ import CouchItem from '../provider/couch.item';
 import { DocumentGetResponse } from 'nano';
 
 export default class DocumentStore extends DataStore<CouchItem> {
-	private total: number = 0;
+	private total = 0;
 
 	constructor(private readonly documentRepository: DocumentRepository) {
 		super();
@@ -16,7 +16,7 @@ export default class DocumentStore extends DataStore<CouchItem> {
 	public list(): CouchItem[] {
 		const data = this.data.slice();
 
-		if (!!this.documentRepository.database) {
+		if (!this.documentRepository.database) {
 			if (this.total === 0) {
 				data.push(new Empty('No Documents avaialble'));
 			}
@@ -36,7 +36,9 @@ export default class DocumentStore extends DataStore<CouchItem> {
 	public async remove(document: Document): Promise<void> {
 		try {
 			await this.documentRepository.remove(document);
-		} catch (error) {}
+		} catch (error) {
+			// TODO: Handle expected empty document
+		}
 
 		this.data = this.data.filter((d) => (d as Document)._id !== document._id);
 
