@@ -13,7 +13,7 @@
 		"name": "Artur Biko"
 	},
 	"engines": {
-		"vscode": "^1.74.0"
+		"vscode": "^1.79.2"
 	},
 	"categories": [
 		"Other",
@@ -98,18 +98,18 @@
 			"view/item/context": [
 				{
 					"command": "couchdb-vs.removeDatabase",
-					"when": "view == couchdb-vs.couchDataView",
+					"when": "viewItem == 'database'",
 					"group": "inline"
 				},
 				{
 					"command": "couchdb-vs.copyItemName",
 					"group": "inline",
-					"when": "viewItem != page"
+					"when": "viewItem != 'action' && viewItem != 'empty'"
 				},
 				{
 					"command": "couchdb-vs.removeDocument",
-					"when": "view == couchdb-vs.couchDocumentList && viewItem == document",
-					"group": "inline"
+					"group": "inline",
+					"when": "viewItem == 'document'"
 				}
 			]
 		},
@@ -136,7 +136,11 @@
 			},
 			{
 				"command": "couchdb-vs.selectDatabase",
-				"title": "Select"
+				"title": "Select Database"
+			},
+			{
+				"command": "couchdb-vs.loadDocuments",
+				"title": "Load Documents"
 			},
 			{
 				"command": "couchdb-vs.openSettings",
@@ -155,7 +159,7 @@
 		"viewsWelcome": [
 			{
 				"view": "couchdb-vs.couchDataView",
-				"contents": "Please configure the connection settings and try refreshing the data. \n[Settings](command:couchdb-vs.openSettings)"
+				"contents": "Please configure the connection settings and try refreshing the data. \n[Settings](command:couchdb-vs.openSettings)\n\nOpen the settings menu manually in case the button above is not working, and search for `couchdb-vs` to set the credentials manually. 🔧"
 			},
 			{
 				"view": "couchdb-vs.couchDocumentList",

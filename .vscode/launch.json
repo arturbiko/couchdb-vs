@@ -17,6 +17,7 @@
 			"name": "Extension Tests",
 			"type": "extensionHost",
 			"request": "launch",
+			"runtimeExecutable": "${execPath}",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--extensionTestsPath=${workspaceFolder}/out/test/suite/index"
@@ -25,7 +26,7 @@
 				"${workspaceFolder}/out/**/*.js",
 				"${workspaceFolder}/dist/**/*.js"
 			],
-			"preLaunchTask": "tasks: watch-tests",
+			"preLaunchTask": "tasks: compile-tests",
 			"env": {
 				"TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json"
 			}

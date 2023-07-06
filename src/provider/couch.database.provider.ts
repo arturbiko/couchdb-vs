@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import CouchItem from './couch.item';
-import CouchModel from './couch.model';
+import DatabaseStore from '../core/database.store';
 
 export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<CouchItem | undefined> =
@@ -8,18 +8,10 @@ export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {
 
 	private view: vscode.TreeView<CouchItem> | undefined;
 
-	private readonly model: CouchModel;
-
 	readonly onDidChangeTreeData: vscode.Event<CouchItem | undefined> =
 		this._onDidChangeTreeData.event;
 
-	constructor(model: CouchModel) {
-		this.model = model;
-	}
-
-	public registerView(view: vscode.TreeView<CouchItem>): void {
-		this.view = view;
-	}
+	constructor(private readonly databaseStore: DatabaseStore) {}
 
 	public getParent(element: CouchItem): vscode.ProviderResult<CouchItem> {
 		return undefined;
@@ -29,30 +21,13 @@ export class CouchDataProvider implements vscode.TreeDataProvider<CouchItem> {
 		return element;
 	}
 
-	public getChildren(element?: CouchItem): CouchItem[] {
-		return this.model.listDatabases();
+	public getChildren(element?: CouchItem): vscode.ProviderResult<CouchItem[]> {
+		return this.databaseStore.list();
 	}
 
-	public selectChild(id: string): void {
-		if (!this.view) {
-			return;
-		}
-
-		const database = this.model.listDatabases().find((db) => db.id === id);
-
-		if (!database) {
-			return;
-		}
-
-		this.view.reveal(database, { focus: true, select: true });
-	}
-
-	public refresh(): void {
-		if (this.view) {
-			this.view.title =
-				this.model.databaseCount > 0
-					? `Databases (${this.model.databaseCount})`
-					: 'Databases';
+	public refresh(view?: vscode.TreeView<CouchItem>): void {
+		if (view) {
+			view.title = `Databases (${this.databaseStore.size()})`;
 		}
 
 		this._onDidChangeTreeData.fire(undefined);

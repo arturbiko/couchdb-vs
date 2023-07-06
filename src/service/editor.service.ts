@@ -33,7 +33,7 @@ export default class EditorService {
 
 		const doc = await vscode.workspace.openTextDocument(uri);
 
-		if (existing && (existing as Document).hasChanged(document)) {
+		if (existing) {
 			const entireDocumentRange = new vscode.Range(0, 0, doc?.lineCount || 0, 0);
 			const edit = new vscode.WorkspaceEdit();
 			edit.replace(uri, entireDocumentRange, document.content || '');
@@ -47,10 +47,7 @@ export default class EditorService {
 
 	private sanitizeName(name: string): string {
 		const forbiddenSymbols = /<|>|:|\/|\\|\||\?|\*/g;
-		if (forbiddenSymbols.test(name)) {
-			return name.replace(forbiddenSymbols, '');
-		}
 
-		return name;
+		return name.replace(forbiddenSymbols, '');
 	}
 }

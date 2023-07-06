@@ -39,10 +39,9 @@ export class Page extends CouchItem {
 export class Database extends CouchItem {
 	constructor(
 		public readonly label: string,
-		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
 		public readonly command?: vscode.Command
 	) {
-		super(label, collapsibleState);
+		super(label, vscode.TreeItemCollapsibleState.None);
 
 		this.id = label;
 
@@ -53,6 +52,8 @@ export class Database extends CouchItem {
 		};
 
 		this.iconPath = iconPath('db-row.png');
+
+		this.contextValue = 'database';
 	}
 
 	public get type(): ViewType {
@@ -102,6 +103,11 @@ export class Document extends CouchItem {
 		this.content = content;
 	}
 
+	public setRev(rev: string): void {
+		this._rev = rev;
+		this.description = `_rev: ${this._rev}`;
+	}
+
 	public hasChanged(updated: object): boolean {
 		if (!(updated instanceof Document)) {
 			return false;
@@ -111,9 +117,29 @@ export class Document extends CouchItem {
 	}
 }
 
+export class Load extends CouchItem {
+	constructor(public readonly label: string) {
+		super(label, vscode.TreeItemCollapsibleState.None);
+
+		this.command = {
+			command: extensionId('loadDocuments'),
+			arguments: [],
+			title: 'load',
+		};
+
+		this.contextValue = 'action';
+	}
+
+	public get type(): ViewType {
+		return ViewType.ACTION;
+	}
+}
+
 export class Empty extends CouchItem {
 	constructor(public readonly label: string) {
 		super(label, vscode.TreeItemCollapsibleState.None);
+
+		this.contextValue = 'empty';
 	}
 
 	public get type(): ViewType {

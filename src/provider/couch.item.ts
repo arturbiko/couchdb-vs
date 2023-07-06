@@ -5,6 +5,7 @@ export enum ViewType {
 	DOCUMENT,
 	DATABASE,
 	EMPTY,
+	ACTION,
 }
 
 export default abstract class CouchItem extends vscode.TreeItem {
