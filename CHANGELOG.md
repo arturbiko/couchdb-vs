@@ -2,6 +2,20 @@
 
 Please refer to the sections below for an overview of the changes made in each release. We appreciate your support and encourage you to provide feedback and suggestions as we strive to make our project even better.
 
+## [1.0.1] - 2023-07-07
+
+### Fixed
+
+- No more than a fixed amount of docs were loaded
+
+## [1.0.0] - 2023-07-07
+
+### Updated
+
+- Refactore the complete codebase to make the code more readable, and being able to fix and test
+  the new features more easily
+- Improve wording
+
 ## [0.2.1] - 2023-05-25
 
 ### Added
