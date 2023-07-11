@@ -43,8 +43,6 @@ export class Document extends CouchItem implements vscode.FileStat {
 
 	public mtime: number;
 
-	public ptime: number;
-
 	public size: number = 0;
 
 	public permissions?: vscode.FilePermission | undefined;
@@ -53,7 +51,7 @@ export class Document extends CouchItem implements vscode.FileStat {
 		super(document.id, vscode.TreeItemCollapsibleState.None);
 
 		this.uri = vscode.Uri.parse(
-			`${CouchFileSystemProvider.scheme}://remote/${source}/${document.id}.json`
+			`${CouchFileSystemProvider.scheme}://${source}/${document.id}`
 		);
 
 		this._id = document.id;
@@ -74,10 +72,8 @@ export class Document extends CouchItem implements vscode.FileStat {
 
 		this.contextValue = 'document';
 
-		this.ctime = 0; // couch does not provide this information
-		this.mtime = 0; // modification time of the document
-
-		this.ptime = 0; // save previous modification time of the document
+		this.ctime = 0;
+		this.mtime = 0;
 	}
 
 	public get viewType(): ViewType {
@@ -98,12 +94,7 @@ export class Document extends CouchItem implements vscode.FileStat {
 		this._rev = rev;
 		this.description = `_rev: ${this._rev}`;
 
-		this.ptime = this.mtime;
 		this.mtime = Date.now();
-	}
-
-	public hasChanged(): boolean {
-		return this.mtime !== this.ptime;
 	}
 
 	public dispose(): void {

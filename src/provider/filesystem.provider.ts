@@ -1,12 +1,11 @@
 import * as vscode from 'vscode';
-import DocumentStore from '../core/document.store';
 
 export class CouchFileSystemProvider implements vscode.FileSystemProvider {
-	public static scheme = 'couchdb-vs';
+	public static scheme = 'couchdb';
 
 	onDidChangeFile: vscode.Event<vscode.FileChangeEvent[]>;
 
-	constructor(private readonly documentStore: DocumentStore) {
+	constructor() {
 		this.onDidChangeFile = new vscode.EventEmitter<
 			vscode.FileChangeEvent[]
 		>().event;
@@ -16,48 +15,25 @@ export class CouchFileSystemProvider implements vscode.FileSystemProvider {
 		uri: vscode.Uri,
 		options: { readonly recursive: boolean; readonly excludes: readonly string[] }
 	): vscode.Disposable {
-		const document = this.documentStore.findByURI(uri);
-
-		if (!document) {
-			throw vscode.FileSystemError.FileNotFound('Document not found.');
-		}
-
-		return document;
+		throw new Error('Method not implemented.');
 	}
 
 	stat(uri: vscode.Uri): vscode.FileStat | Thenable<vscode.FileStat> {
-		const document = this.documentStore.findByURI(uri);
-
-		if (!document) {
-			throw vscode.FileSystemError.FileNotFound('Document not found.');
-		}
-
-		return {
-			type: vscode.FileType.File,
-			ctime: document.ctime,
-			mtime: document.mtime,
-			size: document.size,
-		};
+		throw new Error('Method not implemented.');
 	}
 
 	readDirectory(
 		uri: vscode.Uri
 	): [string, vscode.FileType][] | Thenable<[string, vscode.FileType][]> {
-		throw new Error('readDirectory method not implemented.');
+		throw new Error('Method not implemented.');
 	}
 
 	createDirectory(uri: vscode.Uri): void | Thenable<void> {
-		throw new Error('createDirectory method not implemented.');
+		throw new Error('Method not implemented.');
 	}
 
 	readFile(uri: vscode.Uri): Uint8Array | Thenable<Uint8Array> {
-		const document = this.documentStore.findByURI(uri);
-
-		if (!document) {
-			throw vscode.FileSystemError.FileNotFound('Document not found.');
-		}
-
-		return new Uint8Array(Buffer.from(document.content));
+		throw new Error('Method not implemented.');
 	}
 
 	writeFile(
@@ -65,14 +41,14 @@ export class CouchFileSystemProvider implements vscode.FileSystemProvider {
 		content: Uint8Array,
 		options: { readonly create: boolean; readonly overwrite: boolean }
 	): void | Thenable<void> {
-		throw new Error('writeFile method not implemented.');
+		throw new Error('Method not implemented.');
 	}
 
 	delete(
 		uri: vscode.Uri,
 		options: { readonly recursive: boolean }
 	): void | Thenable<void> {
-		throw new Error('delete method not implemented.');
+		throw new Error('Method not implemented.');
 	}
 
 	rename(
@@ -80,7 +56,7 @@ export class CouchFileSystemProvider implements vscode.FileSystemProvider {
 		newUri: vscode.Uri,
 		options: { readonly overwrite: boolean }
 	): void | Thenable<void> {
-		throw new Error('rename method not implemented.');
+		throw new Error('Method not implemented.');
 	}
 
 	copy?(
@@ -88,6 +64,6 @@ export class CouchFileSystemProvider implements vscode.FileSystemProvider {
 		destination: vscode.Uri,
 		options: { readonly overwrite: boolean }
 	): void | Thenable<void> {
-		throw new Error('copy method not implemented.');
+		throw new Error('Method not implemented.');
 	}
 }

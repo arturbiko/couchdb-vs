@@ -1,15 +1,11 @@
 import * as vscode from 'vscode';
 import { CouchFileSystemProvider } from '../provider/filesystem.provider';
-import DocumentStore from '../core/document.store';
 
 export default class EditorService {
 	private provider: CouchFileSystemProvider;
 
-	constructor(
-		private readonly context: vscode.ExtensionContext,
-		private readonly documentStore: DocumentStore
-	) {
-		this.provider = new CouchFileSystemProvider(documentStore);
+	constructor(private readonly context: vscode.ExtensionContext) {
+		this.provider = new CouchFileSystemProvider();
 
 		const providerRegistration = vscode.Disposable.from(
 			vscode.workspace.registerFileSystemProvider(

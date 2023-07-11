@@ -61,13 +61,7 @@ export default class DocumentController {
 			document.setContent(JSON.stringify(data, null, '\t'));
 
 			// open the document in a new editor
-			const content = await vscode.workspace.openTextDocument(document.uri);
-
-			const edit = await vscode.window.showTextDocument(content);
-			// force update else content is refreshed on redraw
-			if (document.hasChanged()) {
-				await vscode.commands.executeCommand('workbench.action.files.revert');
-			}
+			vscode.workspace.openTextDocument(document.uri);
 		} catch (error) {
 			vscode.window.showErrorMessage('Document was removed.');
 
