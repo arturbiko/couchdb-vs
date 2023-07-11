@@ -9,8 +9,6 @@ export default class DocumentEditorProvider
 
 	private _documents = new Map<string, CouchItem>();
 
-	private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
-
 	private _subscriptions: vscode.Disposable;
 
 	constructor() {
@@ -41,6 +39,5 @@ export default class DocumentEditorProvider
 
 	public dispose() {
 		this._subscriptions.dispose();
-		this._onDidChange.dispose();
 	}
 }

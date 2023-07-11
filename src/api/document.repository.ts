@@ -24,7 +24,7 @@ export default class DocumentRepository {
 		const couch = await this.connection.instance();
 
 		const response = await couch.request({
-			db: this.database.label,
+			db: this.database.id,
 			path: '_all_docs',
 			method: 'post',
 			body: {

@@ -1,53 +1,19 @@
 import * as vscode from 'vscode';
-import { Document } from '../provider/couch.collection';
-import DocumentEditorProvider from '../provider/couch.editor.provider';
+import { CouchFileSystemProvider } from '../provider/filesystem.provider';
 
 export default class EditorService {
-	private provider: DocumentEditorProvider;
+	private provider: CouchFileSystemProvider;
 
 	constructor(private readonly context: vscode.ExtensionContext) {
-		this.provider = new DocumentEditorProvider();
+		this.provider = new CouchFileSystemProvider();
 
-		const providerRegistrations = vscode.Disposable.from(
-			vscode.workspace.registerTextDocumentContentProvider(
-				DocumentEditorProvider.scheme,
+		const providerRegistration = vscode.Disposable.from(
+			vscode.workspace.registerFileSystemProvider(
+				CouchFileSystemProvider.scheme,
 				this.provider
 			)
 		);
 
-		this.context.subscriptions.push(this.provider, providerRegistrations);
-	}
-
-	public async openDocument(document: Document): Promise<void> {
-		if (!this.provider) {
-			return;
-		}
-
-		const docName = this.sanitizeName(`${document.source}_${document._id}`);
-
-		const uri = vscode.Uri.parse(
-			`${DocumentEditorProvider.scheme}:${docName}.json`
-		);
-		const existing = this.provider.find(uri);
-		this.provider.set(uri, document);
-
-		const doc = await vscode.workspace.openTextDocument(uri);
-
-		if (existing) {
-			const entireDocumentRange = new vscode.Range(0, 0, doc?.lineCount || 0, 0);
-			const edit = new vscode.WorkspaceEdit();
-			edit.replace(uri, entireDocumentRange, document.content || '');
-
-			vscode.workspace.applyEdit(edit);
-		}
-
-		vscode.window.showTextDocument(doc, { preview: false });
-		vscode.languages.setTextDocumentLanguage(doc, 'json');
-	}
-
-	private sanitizeName(name: string): string {
-		const forbiddenSymbols = /<|>|:|\/|\\|\||\?|\*/g;
-
-		return name.replace(forbiddenSymbols, '');
+		this.context.subscriptions.push(providerRegistration);
 	}
 }

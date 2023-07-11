@@ -65,7 +65,9 @@ export default class DocumentController {
 
 			document.setRev(data._rev);
 			document.setContent(JSON.stringify(data, null, '\t'));
-			await this.editorService.openDocument(document);
+
+			// open the document in a new editor
+			vscode.workspace.openTextDocument(document.uri);
 		} catch (error) {
 			vscode.window.showErrorMessage('Document was removed.');
 

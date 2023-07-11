@@ -78,11 +78,7 @@ export default class DocumentStore extends DataStore<CouchItem> {
 			)
 			.map(
 				(document: CouchResponse) =>
-					new Document(
-						document,
-						this.documentRepository.database!.label,
-						vscode.TreeItemCollapsibleState.None
-					)
+					new Document(document, this.documentRepository.database!.id!)
 			);
 
 		this.data = this.data.concat(data);
