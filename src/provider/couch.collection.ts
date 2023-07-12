@@ -26,12 +26,12 @@ export class Database extends CouchItem {
 	}
 }
 
-export class Document extends CouchItem {
+export class Document extends CouchItem implements vscode.FileStat {
 	public _id: string;
 
 	public _rev: string;
 
-	public content: string | undefined;
+	public content: string;
 
 	public source: string;
 
@@ -43,6 +43,8 @@ export class Document extends CouchItem {
 
 	public mtime: number;
 
+	public ptime: number;
+
 	public size: number = 0;
 
 	public permissions?: vscode.FilePermission | undefined;
@@ -51,7 +53,7 @@ export class Document extends CouchItem {
 		super(document.id, vscode.TreeItemCollapsibleState.None);
 
 		this.uri = vscode.Uri.parse(
-			`${CouchFileSystemProvider.scheme}://${source}/${document.id}`
+			`${CouchFileSystemProvider.scheme}://remote/${source}/${document.id}.json`
 		);
 
 		this._id = document.id;
@@ -67,33 +69,41 @@ export class Document extends CouchItem {
 			title: 'view',
 		};
 
+		this.content = '';
 		this.description = `_rev: ${this._rev}`;
 
 		this.contextValue = 'document';
 
-		this.ctime = 0;
-		this.mtime = 0;
+		this.ctime = 0; // couch does not provide this information
+		this.mtime = 0; // modification time of the document
+
+		this.ptime = 0; // save previous modification time of the document
 	}
 
 	public get viewType(): ViewType {
 		return ViewType.DOCUMENT;
 	}
 
-	public setContent(content: string | undefined): void {
+	public setContent(content: string): void {
 		this.content = content;
+
+		this.size = Buffer.from(content).byteLength;
 	}
 
 	public setRev(rev: string): void {
-		this._rev = rev;
-		this.description = `_rev: ${this._rev}`;
-	}
-
-	public hasChanged(updated: object): boolean {
-		if (!(updated instanceof Document)) {
-			return false;
+		if (this._rev === rev) {
+			return;
 		}
 
-		return this._rev !== updated._rev;
+		this._rev = rev;
+		this.description = `_rev: ${this._rev}`;
+
+		this.ptime = this.mtime;
+		this.mtime = Date.now();
+	}
+
+	public hasChanged(): boolean {
+		return this.mtime !== this.ptime;
 	}
 
 	public dispose(): void {

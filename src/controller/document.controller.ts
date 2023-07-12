@@ -3,19 +3,13 @@ import CouchItem from '../provider/couch.item';
 import DocumentStore from '../core/document.store';
 import { CouchDocumentProvider } from '../provider/couch.document.provider';
 import { Document } from '../provider/couch.collection';
-import EditorService from '../service/editor.service';
 
 export default class DocumentController {
-	private readonly editorService: EditorService;
-
 	constructor(
 		private readonly documentStore: DocumentStore,
 		private readonly documentProvider: CouchDocumentProvider,
-		private readonly documentView: vscode.TreeView<CouchItem>,
-		private readonly context: vscode.ExtensionContext
-	) {
-		this.editorService = new EditorService(context);
-	}
+		private readonly documentView: vscode.TreeView<CouchItem>
+	) {}
 
 	public async refreshDocuments(): Promise<void> {
 		try {
@@ -67,7 +61,13 @@ export default class DocumentController {
 			document.setContent(JSON.stringify(data, null, '\t'));
 
 			// open the document in a new editor
-			vscode.workspace.openTextDocument(document.uri);
+			const content = await vscode.workspace.openTextDocument(document.uri);
+
+			const edit = await vscode.window.showTextDocument(content);
+			// force update else content is refreshed on redraw
+			if (document.hasChanged()) {
+				await vscode.commands.executeCommand('workbench.action.files.revert');
+			}
 		} catch (error) {
 			vscode.window.showErrorMessage('Document was removed.');
 

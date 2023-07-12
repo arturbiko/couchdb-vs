@@ -30,7 +30,17 @@ export default class DocumentStore extends DataStore<CouchItem> {
 	}
 
 	public async get(document: Document): Promise<DocumentGetResponse> {
-		return this.documentRepository.get(document);
+		return await this.documentRepository.get(document);
+	}
+
+	public findByURI(uri: vscode.Uri): Document | undefined {
+		return this.data.find((d) => {
+			if (d instanceof Document) {
+				return d.uri.toString() === uri.toString();
+			}
+
+			return false;
+		}) as Document;
 	}
 
 	public async remove(document: Document): Promise<void> {
