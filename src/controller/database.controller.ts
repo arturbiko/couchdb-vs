@@ -17,12 +17,7 @@ export default class DatabaseController {
 		private readonly databaseView: vscode.TreeView<CouchItem>
 	) {}
 
-	public async createDatabase(isConnected: boolean): Promise<void> {
-		if (!isConnected) {
-			vscode.window.showErrorMessage('Please connect to an instance 🚧');
-			return;
-		}
-
+	public async createDatabase(): Promise<void> {
 		try {
 			let valid = undefined;
 

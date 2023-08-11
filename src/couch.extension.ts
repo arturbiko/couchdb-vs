@@ -76,7 +76,7 @@ export default class CouchExtension {
 		commands(databaseController, documentController).forEach((command) =>
 			this.context.subscriptions.push(
 				vscode.commands.registerCommand(extensionId(command.id), (...args: any[]) =>
-					command.fn(...args, this.connection.isConnected)
+					command.fn(...args)
 				)
 			)
 		);
