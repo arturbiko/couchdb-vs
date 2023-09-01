@@ -108,7 +108,7 @@
 				{
 					"command": "couchdb-vs.copyItemName",
 					"group": "inline",
-					"when": "viewItem != 'action' && viewItem != 'empty'"
+					"when": "viewItem != 'action' && viewItem != 'empty' && (view == couchdb-vs.couchDataView || view == couchdb-vs.couchDocumentList)"
 				},
 				{
 					"command": "couchdb-vs.removeDocument",
@@ -125,7 +125,7 @@
 			},
 			{
 				"command": "couchdb-vs.addDatabase",
-				"title": "Add Database",
+				"title": "Add non-partitioned Database",
 				"icon": "$(add)"
 			},
 			{

@@ -29,11 +29,11 @@ export default class ConnectionService {
 				return;
 			}
 
-			this.writeSettings();
+			await this.writeSettings();
 		});
 	}
 
-	private writeSettings(): void {
+	private async writeSettings(): Promise<void> {
 		const config = vscode.workspace.getConfiguration(extensionId());
 		const protocol = config.get<string>('protocol');
 		const host = config.get<string>('host');
@@ -52,6 +52,8 @@ export default class ConnectionService {
 			username,
 			password,
 		};
+
+		await this.connect();
 	}
 
 	private async connect(): Promise<nano.ServerScope> {
