@@ -2,6 +2,13 @@
 
 Please refer to the sections below for an overview of the changes made in each release. We appreciate your support and encourage you to provide feedback and suggestions as we strive to make our project even better.
 
+## [1.0.2] - 2023-09-01
+
+### Fixed
+
+- Made connecting more stable
+- The copy button doesn't bleed into other entries
+
 ## [1.0.1] - 2023-07-07
 
 ### Fixed

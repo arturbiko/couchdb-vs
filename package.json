@@ -125,7 +125,7 @@
 			},
 			{
 				"command": "couchdb-vs.addDatabase",
-				"title": "Add Database",
+				"title": "Add non-partitioned Database",
 				"icon": "$(add)"
 			},
 			{
