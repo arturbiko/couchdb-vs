@@ -53,15 +53,15 @@ export default class DocumentController {
 
 	public async openDocument(document: Document): Promise<void> {
 		try {
-			const data = await this.documentStore.get(document);
-
 			this.documentProvider.refresh(this.documentView);
 
-			document.setRev(data._rev);
-			document.setContent(JSON.stringify(data, null, '\t'));
-
 			// open the document in a new editor
-			vscode.workspace.openTextDocument(document.uri);
+			const doc = await vscode.workspace.openTextDocument(document.uri);
+
+			// set json language mode
+			await vscode.languages.setTextDocumentLanguage(doc, 'json');
+
+			vscode.window.showTextDocument(doc);
 		} catch (error) {
 			vscode.window.showErrorMessage('Document was removed.');
 

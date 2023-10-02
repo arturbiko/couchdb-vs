@@ -1,69 +1,102 @@
 import * as vscode from 'vscode';
+import DocumentStore from '../core/document.store';
+import { TextEncoder } from 'util';
+import { Document } from './couch.collection';
 
 export class CouchFileSystemProvider implements vscode.FileSystemProvider {
 	public static scheme = 'couchdb';
 
 	onDidChangeFile: vscode.Event<vscode.FileChangeEvent[]>;
 
-	constructor() {
+	constructor(private readonly documentStore: DocumentStore) {
 		this.onDidChangeFile = new vscode.EventEmitter<
 			vscode.FileChangeEvent[]
 		>().event;
 	}
 
-	watch(
+	public watch(
 		uri: vscode.Uri,
 		options: { readonly recursive: boolean; readonly excludes: readonly string[] }
 	): vscode.Disposable {
-		throw new Error('Method not implemented.');
+		console.log('watch', uri, options);
+
+		return new vscode.Disposable(() => {});
 	}
 
-	stat(uri: vscode.Uri): vscode.FileStat | Thenable<vscode.FileStat> {
-		throw new Error('Method not implemented.');
+	public stat(uri: vscode.Uri): vscode.FileStat {
+		const doc = this.documentStore.findByURI(uri);
+
+		return {
+			type: vscode.FileType.File,
+			ctime: (doc as Document).ctime,
+			mtime: (doc as Document).mtime,
+			size: new TextEncoder().encode((doc as Document).content || '').length,
+		};
 	}
 
-	readDirectory(
+	public readDirectory(
 		uri: vscode.Uri
 	): [string, vscode.FileType][] | Thenable<[string, vscode.FileType][]> {
-		throw new Error('Method not implemented.');
+		console.log('readDirectory', uri);
+
+		return Promise.reject();
 	}
 
-	createDirectory(uri: vscode.Uri): void | Thenable<void> {
-		throw new Error('Method not implemented.');
+	public createDirectory(uri: vscode.Uri): void | Thenable<void> {
+		console.log('createDirectory', uri);
+
+		return Promise.reject();
 	}
 
-	readFile(uri: vscode.Uri): Uint8Array | Thenable<Uint8Array> {
-		throw new Error('Method not implemented.');
+	public async readFile(uri: vscode.Uri): Promise<Uint8Array> {
+		const document = await this.documentStore.get({
+			source: uri.authority,
+			_id: uri.path.slice(1),
+		});
+
+		if (!document) {
+			throw new Error('Document not found');
+		}
+
+		return new TextEncoder().encode(document.content);
 	}
 
-	writeFile(
+	public writeFile(
 		uri: vscode.Uri,
 		content: Uint8Array,
 		options: { readonly create: boolean; readonly overwrite: boolean }
 	): void | Thenable<void> {
-		throw new Error('Method not implemented.');
+		console.log('writeFile', uri, content, options);
+
+		return Promise.reject();
 	}
 
-	delete(
+	public delete(
 		uri: vscode.Uri,
 		options: { readonly recursive: boolean }
 	): void | Thenable<void> {
-		throw new Error('Method not implemented.');
+		console.log('delete', uri, options);
+
+		return Promise.reject();
 	}
 
-	rename(
+	public rename(
 		oldUri: vscode.Uri,
 		newUri: vscode.Uri,
 		options: { readonly overwrite: boolean }
 	): void | Thenable<void> {
-		throw new Error('Method not implemented.');
+		console.log('rename', oldUri, newUri, options);
+
+		return Promise.reject();
 	}
 
-	copy?(
+	public copy?(
 		source: vscode.Uri,
 		destination: vscode.Uri,
 		options: { readonly overwrite: boolean }
 	): void | Thenable<void> {
-		throw new Error('Method not implemented.');
+		console.log('copy', source, destination, options);
+
+		return Promise.reject();
 	}
 }

@@ -72,7 +72,7 @@ export class Document extends CouchItem implements vscode.FileStat {
 
 		this.contextValue = 'document';
 
-		this.ctime = 0;
+		this.ctime = Date.now();
 		this.mtime = 0;
 	}
 

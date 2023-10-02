@@ -39,12 +39,15 @@ export default class DocumentRepository {
 		};
 	}
 
-	public async get(document: Document): Promise<DocumentGetResponse> {
+	public async get(document: {
+		source: string;
+		_id: string;
+	}): Promise<DocumentGetResponse> {
 		const couch = await this.connection.instance();
 
 		const db = couch.use(document.source);
 
-		return db.get(document._id, {});
+		return await db.get(document._id, {});
 	}
 
 	public async remove(document: Document): Promise<void> {

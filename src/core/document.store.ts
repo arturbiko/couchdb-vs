@@ -7,6 +7,8 @@ import CouchItem from '../provider/couch.item';
 import { DocumentGetResponse } from 'nano';
 
 export default class DocumentStore extends DataStore<CouchItem> {
+	public active?: DocumentGetResponse;
+
 	private total = 0;
 
 	constructor(private readonly documentRepository: DocumentRepository) {
@@ -29,8 +31,31 @@ export default class DocumentStore extends DataStore<CouchItem> {
 		return data;
 	}
 
-	public async get(document: Document): Promise<DocumentGetResponse> {
-		return await this.documentRepository.get(document);
+	public async get(document: {
+		source: string;
+		_id: string;
+	}): Promise<Document> {
+		const data = await this.documentRepository.get(document);
+
+		let doc = this.data.find((d) => (d as Document)._id! === document._id);
+		if (!doc) {
+			doc = new Document(
+				{
+					id: data._id,
+					value: {
+						rev: data._rev,
+					},
+				},
+				document.source
+			);
+
+			this.data.push(doc);
+		}
+
+		(doc as Document).mtime = Date.now();
+		(doc as Document).setContent(JSON.stringify(data, null, '\t'));
+
+		return doc as Document;
 	}
 
 	public findByURI(uri: vscode.Uri): Document | undefined {
