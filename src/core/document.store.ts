@@ -4,11 +4,8 @@ import DataStore from '../api/data.interface';
 import DocumentRepository from '../api/document.repository';
 import { Document, Empty, Load } from '../provider/couch.collection';
 import CouchItem from '../provider/couch.item';
-import { DocumentGetResponse } from 'nano';
 
 export default class DocumentStore extends DataStore<CouchItem> {
-	public active?: DocumentGetResponse;
-
 	private total = 0;
 
 	constructor(private readonly documentRepository: DocumentRepository) {
@@ -31,31 +28,41 @@ export default class DocumentStore extends DataStore<CouchItem> {
 		return data;
 	}
 
-	public async get(document: {
-		source: string;
-		_id: string;
-	}): Promise<Document> {
-		const data = await this.documentRepository.get(document);
-
-		let doc = this.data.find((d) => (d as Document)._id! === document._id);
-		if (!doc) {
-			doc = new Document(
-				{
-					id: data._id,
-					value: {
-						rev: data._rev,
-					},
-				},
-				document.source
-			);
-
-			this.data.push(doc);
+	public async get(uri: vscode.Uri): Promise<Document> {
+		const document = this.findByURI(uri);
+		if (!document) {
+			throw new Error('Document not found');
 		}
 
-		(doc as Document).mtime = Date.now();
-		(doc as Document).setContent(JSON.stringify(data, null, '\t'));
+		const data = await this.documentRepository.get(document);
+		document.setContent(data); // update doc with current data
 
-		return doc as Document;
+		return document;
+	}
+
+	public async put(uri: vscode.Uri, data: Uint8Array): Promise<void> {
+		const document = this.findByURI(uri);
+		if (!document) {
+			throw new Error('Document not found');
+		}
+
+		try {
+			// inject current _id and _rev into content for update
+			const content = JSON.parse(data.toString());
+			content['_id'] = document._id;
+
+			if (document._rev) {
+				content['_rev'] = document._rev;
+			}
+
+			const rev = await this.documentRepository.put(document, content);
+
+			document.setContent(content);
+			document.setRev(rev);
+
+		} catch (error) {
+			throw new Error('Cannot update document.');
+		}
 	}
 
 	public findByURI(uri: vscode.Uri): Document | undefined {
@@ -81,7 +88,7 @@ export default class DocumentStore extends DataStore<CouchItem> {
 	}
 
 	public async refresh(document: Document): Promise<void> {
-		const index = this.data.findIndex((d) => d.id === document.id);
+		const index = this.data.findIndex((d) => (d as Document)._id === document._id);
 
 		if (index === -1) {
 			return;

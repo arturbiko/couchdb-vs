@@ -3,6 +3,7 @@ import CouchItem, { ViewType } from './couch.item';
 import { extensionId, iconPath } from '../extension';
 import { CouchResponse } from '../api/couch.interface';
 import { CouchFileSystemProvider } from './filesystem.provider';
+import { TextEncoder } from 'util';
 
 export class Database extends CouchItem {
 	constructor(label: string) {
@@ -31,8 +32,6 @@ export class Document extends CouchItem implements vscode.FileStat {
 
 	public _rev: string;
 
-	public content: string;
-
 	public source: string;
 
 	uri: vscode.Uri;
@@ -46,6 +45,8 @@ export class Document extends CouchItem implements vscode.FileStat {
 	public size: number = 0;
 
 	public permissions?: vscode.FilePermission | undefined;
+
+	private content: any;
 
 	constructor(document: CouchResponse, source: string) {
 		super(document.id, vscode.TreeItemCollapsibleState.None);
@@ -80,10 +81,24 @@ export class Document extends CouchItem implements vscode.FileStat {
 		return ViewType.DOCUMENT;
 	}
 
-	public setContent(content: string): void {
+	public setContent(content: any): void {
+		delete content._id;
+		if (content._rev) {
+			this.setRev(content._rev);
+
+			delete content._rev;
+		}
+
 		this.content = content;
 
-		this.size = Buffer.from(content).byteLength;
+		this.size = Buffer.from(JSON.stringify(this.content, null, '\t')).byteLength;
+		this.mtime = Date.now();
+	}
+
+	public getContent(): Uint8Array {
+		const content = JSON.stringify(this.content, null, '\t');
+
+		return new TextEncoder().encode(content);
 	}
 
 	public setRev(rev: string): void {

@@ -50,6 +50,16 @@ export default class DocumentRepository {
 		return await db.get(document._id, {});
 	}
 
+	public async put(document: Document, content: any): Promise<string> {
+		const couch = await this.connection.instance();
+
+		const db = couch.use(document.source);
+
+		const response = await db.insert(content);
+
+		return response.rev;
+	}
+
 	public async remove(document: Document): Promise<void> {
 		const couch = await this.connection.instance();
 
