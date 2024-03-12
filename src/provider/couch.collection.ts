@@ -2,45 +2,11 @@ import * as vscode from 'vscode';
 import CouchItem, { ViewType } from './couch.item';
 import { extensionId, iconPath } from '../extension';
 import { CouchResponse } from '../api/couch.interface';
-
-export class Page extends CouchItem {
-	public pageNumber: number;
-
-	private elements: CouchItem[] = [];
-
-	constructor(
-		label: string,
-		collapsibleState: vscode.TreeItemCollapsibleState,
-		pageNumber: number,
-		source: string
-	) {
-		super(label, collapsibleState);
-
-		this.pageNumber = pageNumber;
-
-		this.id = `${source}_${pageNumber}`;
-
-		this.contextValue = 'page';
-	}
-
-	public get type(): ViewType {
-		return ViewType.PAGE;
-	}
-
-	public add(element: CouchItem): void {
-		this.elements.push(element);
-	}
-
-	public list(): CouchItem[] {
-		return this.elements;
-	}
-}
+import { CouchFileSystemProvider } from './filesystem.provider';
+import { TextEncoder } from 'util';
 
 export class Database extends CouchItem {
-	constructor(
-		public readonly label: string,
-		public readonly command?: vscode.Command
-	) {
+	constructor(label: string) {
 		super(label, vscode.TreeItemCollapsibleState.None);
 
 		this.id = label;
@@ -56,26 +22,38 @@ export class Database extends CouchItem {
 		this.contextValue = 'database';
 	}
 
-	public get type(): ViewType {
+	public get viewType(): ViewType {
 		return ViewType.DATABASE;
 	}
 }
 
-export class Document extends CouchItem {
+export class Document extends CouchItem implements vscode.FileStat {
 	public _id: string;
 
 	public _rev: string;
 
-	public content: string | undefined;
-
 	public source: string;
 
-	constructor(
-		document: CouchResponse,
-		source: string,
-		collapsibleState: vscode.TreeItemCollapsibleState
-	) {
-		super(document.id, collapsibleState);
+	uri: vscode.Uri;
+
+	public type: vscode.FileType = vscode.FileType.File;
+
+	public ctime: number;
+
+	public mtime: number;
+
+	public size: number = 0;
+
+	public permissions?: vscode.FilePermission | undefined;
+
+	private content: any;
+
+	constructor(document: CouchResponse, source: string) {
+		super(document.id, vscode.TreeItemCollapsibleState.None);
+
+		this.uri = vscode.Uri.parse(
+			`${CouchFileSystemProvider.scheme}://${source}/${document.id}`
+		);
 
 		this._id = document.id;
 		this._rev = document.value.rev;
@@ -90,30 +68,52 @@ export class Document extends CouchItem {
 			title: 'view',
 		};
 
+		this.content = '';
 		this.description = `_rev: ${this._rev}`;
 
 		this.contextValue = 'document';
+
+		this.ctime = Date.now();
+		this.mtime = 0;
 	}
 
-	public get type(): ViewType {
+	public get viewType(): ViewType {
 		return ViewType.DOCUMENT;
 	}
 
-	public setContent(content: string | undefined): void {
+	public setContent(content: any): void {
+		delete content._id;
+		if (content._rev) {
+			this.setRev(content._rev);
+
+			delete content._rev;
+		}
+
 		this.content = content;
+
+		this.size = Buffer.from(JSON.stringify(this.content, null, '\t')).byteLength;
+		this.mtime = Date.now();
+	}
+
+	public getContent(): Uint8Array {
+		const content = JSON.stringify(this.content, null, '\t');
+
+		return new TextEncoder().encode(content);
 	}
 
 	public setRev(rev: string): void {
-		this._rev = rev;
-		this.description = `_rev: ${this._rev}`;
-	}
-
-	public hasChanged(updated: object): boolean {
-		if (!(updated instanceof Document)) {
-			return false;
+		if (this._rev === rev) {
+			return;
 		}
 
-		return this._rev !== updated._rev;
+		this._rev = rev;
+		this.description = `_rev: ${this._rev}`;
+
+		this.mtime = Date.now();
+	}
+
+	public dispose(): void {
+		throw new Error('Method not implemented.');
 	}
 }
 
@@ -130,7 +130,7 @@ export class Load extends CouchItem {
 		this.contextValue = 'action';
 	}
 
-	public get type(): ViewType {
+	public get viewType(): ViewType {
 		return ViewType.ACTION;
 	}
 }
@@ -142,7 +142,7 @@ export class Empty extends CouchItem {
 		this.contextValue = 'empty';
 	}
 
-	public get type(): ViewType {
+	public get viewType(): ViewType {
 		return ViewType.EMPTY;
 	}
 }

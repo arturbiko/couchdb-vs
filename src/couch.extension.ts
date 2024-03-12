@@ -10,6 +10,7 @@ import DatabaseRepository from './api/database.repository';
 import DocumentController from './controller/document.controller';
 import DocumentStore from './core/document.store';
 import DocumentRepository from './api/document.repository';
+import EditorService from './service/editor.service';
 
 export default class CouchExtension {
 	private connection: ConnectionService;
@@ -26,6 +27,9 @@ export default class CouchExtension {
 		// data layer (documents)
 		const documentProvider = new DocumentRepository(this.connection);
 		const documentStore = new DocumentStore(documentProvider);
+
+		// services
+		const editorService = new EditorService(this.context, documentStore);
 
 		// view layer (databases)
 		const couchDataProvider = new CouchDataProvider(databaseStore);
@@ -69,8 +73,7 @@ export default class CouchExtension {
 		const documentController = new DocumentController(
 			documentStore,
 			couchDocumentProvider,
-			documentView,
-			this.context
+			documentView
 		);
 
 		commands(databaseController, documentController).forEach((command) =>

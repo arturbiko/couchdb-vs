@@ -24,7 +24,7 @@ export default class DocumentRepository {
 		const couch = await this.connection.instance();
 
 		const response = await couch.request({
-			db: this.database.label,
+			db: this.database.id,
 			path: '_all_docs',
 			method: 'post',
 			body: {
@@ -39,12 +39,25 @@ export default class DocumentRepository {
 		};
 	}
 
-	public async get(document: Document): Promise<DocumentGetResponse> {
+	public async get(document: {
+		source: string;
+		_id: string;
+	}): Promise<DocumentGetResponse> {
 		const couch = await this.connection.instance();
 
 		const db = couch.use(document.source);
 
-		return db.get(document._id, {});
+		return await db.get(document._id, {});
+	}
+
+	public async put(document: Document, content: any): Promise<string> {
+		const couch = await this.connection.instance();
+
+		const db = couch.use(document.source);
+
+		const response = await db.insert(content);
+
+		return response.rev;
 	}
 
 	public async remove(document: Document): Promise<void> {

@@ -29,7 +29,7 @@ export default class DatabaseStore extends DataStore<Database> {
 
 		this.data.push(database);
 
-		this.data = this.data.filter((entry) => entry.type !== ViewType.EMPTY);
+		this.data = this.data.filter((entry) => entry.viewType !== ViewType.EMPTY);
 		++this.total;
 
 		return database;

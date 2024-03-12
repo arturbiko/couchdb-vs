@@ -19,6 +19,6 @@ export default class DatabaseRepository {
 	public async remove(database: Database): Promise<void> {
 		const couch = await this.connection.instance();
 
-		await couch.db.destroy(database.label);
+		await couch.db.destroy(database.id!);
 	}
 }

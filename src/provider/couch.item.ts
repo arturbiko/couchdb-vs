@@ -9,5 +9,5 @@ export enum ViewType {
 }
 
 export default abstract class CouchItem extends vscode.TreeItem {
-	public abstract get type(): ViewType;
+	public abstract get viewType(): ViewType;
 }

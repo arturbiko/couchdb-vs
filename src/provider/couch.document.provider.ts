@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import CouchItem, { ViewType } from './couch.item';
+import CouchItem from './couch.item';
 import DocumentStore from '../core/document.store';
 
 export class CouchDocumentProvider
